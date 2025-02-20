@@ -1,0 +1,1 @@
+export type Status = "guessing" | "pending" | "failure" | "submittable" | "complete";

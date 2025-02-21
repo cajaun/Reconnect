@@ -13,7 +13,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import * as Haptic from "expo-haptics"
+import * as Haptic from "expo-haptics";
 import { BlurView } from "expo-blur";
 
 type MarqueeItemProps = {
@@ -30,29 +30,31 @@ const MarqueeItem = ({
   containerWidth,
   itemWidth,
 }: MarqueeItemProps) => {
-
-
   const { width: screenWidth } = useWindowDimensions();
 
   const shift = (containerWidth - screenWidth) / 2;
 
   const initialPosition = itemWidth * index - shift;
 
-
   const animatedStyle = useAnimatedStyle(() => {
-    const position =
-      ((initialPosition - scroll.value) % containerWidth) + shift;
+    let position = (initialPosition - scroll.value) % containerWidth;
+
+    if (position < -itemWidth) {
+      position += containerWidth;
+    } else if (position > containerWidth - itemWidth) {
+      position -= containerWidth;
+    }
 
     const rotation = interpolate(
       position,
-      [0, screenWidth - itemWidth],
-      [-1, 1]
+      [-itemWidth, 0, screenWidth - itemWidth, screenWidth],
+      [-1, 0, 1, 0]
     );
 
     const translateY = interpolate(
       position,
-      [0, screenWidth - itemWidth / 2, screenWidth - itemWidth],
-      [3, 0, 3]
+      [-itemWidth, 0, screenWidth - itemWidth, screenWidth],
+      [3, 0, 3, 0]
     );
 
     return {
@@ -66,71 +68,81 @@ const MarqueeItem = ({
       className="absolute h-full  p-2 shadow-md "
       style={[{ width: itemWidth, transformOrigin: "bottom" }, animatedStyle]}
     >
-     <View 
-  className="h-full w-full rounded-3xl" 
-  style={{ backgroundColor: event.color }}
->
-
-<View
-  style={{
-    borderRadius: 36, // Apply the rounded corners here
-    overflow: 'hidden', // Ensures the child respects the parent’s border radius
-    alignSelf: 'flex-start',
-    maxWidth: '50%',
-
-    
-  }}
-  className="top-4 left-4 "
->
-  <BlurView
-    style={{
-      padding: 4,
-      paddingHorizontal: 10,
-    }}
-    tint="dark" // "dark", "light", or "default"
-    intensity={50} // Adjust the intensity
-  >
-    <Text className="text-white font-bold text-center">{event.type}</Text>
-  </BlurView>
-</View>
-
-
-</View>
+      <View
+        className="h-full w-full rounded-3xl"
+        style={{ backgroundColor: event.color }}
+      >
+        <View
+          style={{
+            borderRadius: 36, 
+            overflow: "hidden", 
+            alignSelf: "flex-start",
+            maxWidth: "50%",
+          }}
+          className="top-4 left-4 "
+        >
+          <BlurView
+            style={{
+              padding: 4,
+              paddingHorizontal: 10,
+            }}
+            tint="dark"
+            intensity={50}
+          >
+            <Text className="text-white font-bold text-center">
+              {event.type}
+            </Text>
+          </BlurView>
+        </View>
+      </View>
 
       {/* <Image source={event.image}  /> */}
     </Animated.View>
   );
 };
 
-const Marquee = ({ events, onIndexChange }: { events: any[]; onIndexChange?: (index: number) => void }) => {
-  const scroll = useSharedValue(0);
+const Marquee = ({
+  events,
+  onIndexChange,
+}: {
+  events: any[];
+  onIndexChange?: (index: number) => void;
+}) => {
+  const { width: screenWidth } = useWindowDimensions();
+  const itemWidth = screenWidth * 0.65;
+  const containerWidth = events.length * itemWidth;
+  const shift = (containerWidth - screenWidth) / 2;
+
+  const scroll = useSharedValue(-shift);
 
   const scrollSpeed = useSharedValue(50);
-
-  const { width: screenWidth } = useWindowDimensions();
+  const isUserScrolling = useSharedValue(false);
 
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const itemWidth = screenWidth * 0.65;
-
-  const containerWidth = events.length * itemWidth;
-
   useEffect(() => {
     if (onIndexChange) {
-      onIndexChange(activeIndex)
+      onIndexChange(activeIndex);
     }
-
-  }, [activeIndex])
-
+  }, [activeIndex]);
 
   useAnimatedReaction(
     () => scroll.value,
     (value) => {
-      const normalizedScroll = (value + containerWidth) % containerWidth;
-      const newIndex = Math.floor(
-        (normalizedScroll + (screenWidth - itemWidth) / 2) / itemWidth
-      );
-      runOnJS(setActiveIndex)(newIndex % events.length);
+      const adjustedScroll = value + shift;
+      const normalizedScroll =
+        ((adjustedScroll % containerWidth) + containerWidth) % containerWidth;
+
+      let newIndex = Math.round(normalizedScroll / itemWidth);
+      newIndex = Math.max(0, Math.min(newIndex, events.length - 1));
+
+      if (newIndex !== activeIndex) {
+        runOnJS(setActiveIndex)(newIndex);
+
+        if (isUserScrolling.value) {
+          runOnJS(Haptic.impactAsync)(Haptic.ImpactFeedbackStyle.Medium);
+        }
+      }
     }
   );
 
@@ -142,10 +154,11 @@ const Marquee = ({ events, onIndexChange }: { events: any[]; onIndexChange?: (in
   const gesture = Gesture.Pan()
     .onBegin(() => {
       scrollSpeed.value = 0;
+      isUserScrolling.value = true;
     })
     .onChange((event) => {
       // console.log("onChange", event.changeX);
-      
+
       scroll.value = scroll.value - event.changeX;
     })
 
@@ -155,10 +168,11 @@ const Marquee = ({ events, onIndexChange }: { events: any[]; onIndexChange?: (in
         duration: 1000,
         easing: Easing.out(Easing.quad),
       });
+      isUserScrolling.value = false;
     });
   return (
     <GestureDetector gesture={gesture}>
-      <View className="h-full flex-row">
+      <View className="h-full flex-row overflow-hidden" >
         {/* <Text className = "text-2xl text-white">{activeIndex}</Text> */}
         {events.map((event, index) => (
           <MarqueeItem

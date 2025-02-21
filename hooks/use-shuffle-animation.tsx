@@ -11,18 +11,19 @@ const useShuffleAnimation = (location: number) => {
   useEffect(() => {
     Animated.timing(animatedTop, {
       toValue: row * 25,
-      duration: 425,
+      duration: 400,
       useNativeDriver: false,
     }).start();
 
     Animated.timing(animatedLeft, {
       toValue: col * 25,
-      duration: 425,
+      duration: 400,
       useNativeDriver: false,
     }).start();
   }, [row, col]);
 
   return {
+    row: row,
     animatedStyle: {
       top: animatedTop.interpolate({ inputRange: [0, 100], outputRange: ["0%", "100%"] }),
       left: animatedLeft.interpolate({ inputRange: [0, 100], outputRange: ["0%", "100%"] }),

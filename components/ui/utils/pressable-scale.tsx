@@ -8,17 +8,14 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-// I use this component a lot in my projects, and maybe
-// it's worth to create a package for it (one day) :)
 
-// Define the props for the PressableScale component
 export type PressableScaleProps = {
-  children: React.ReactNode; // Content to be wrapped by the pressable component
-  onPress?: () => void; // Function to be executed on press
-  style?: StyleProp<ViewStyle>; // Custom styles for the pressable component
+  children: React.ReactNode; 
+  onPress?: () => void; 
+  style?: StyleProp<ViewStyle>; 
 };
 
-// Create the PressableScale component
+
 const PressableScale: React.FC<PressableScaleProps> = ({
   children,
   onPress,

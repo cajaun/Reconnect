@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { shuffle as arrayShuffle, sleep } from "@/utils/puzzle-utils";
-import {  Guess, Puzzle, Word } from "@/types/puzzle";
+import { Guess, Puzzle, Word } from "@/types/puzzle";
 import { Status } from "@/types/status";
 
 export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
@@ -23,7 +23,7 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
   const shuffle = useCallback(
     () =>
       setShuffledWords(arrayShuffle(shuffledWords, correctGuesses.length * 4)),
-    [shuffledWords, correctGuesses.length],
+    [shuffledWords, correctGuesses.length]
   );
 
   const deselect = useCallback(() => setSelectedWords([]), []);
@@ -38,8 +38,13 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
           if (status === "submittable") setStatus("guessing");
         } else {
           if (next.length === 4) return next;
-          const idxInUnshuffled = puzzle.words.findIndex((w) => w.id === word.id);
-          const insertIndex = next.findIndex((w) => idxInUnshuffled > puzzle.words.findIndex((p) => p.id === w.id));
+          const idxInUnshuffled = puzzle.words.findIndex(
+            (w) => w.id === word.id
+          );
+          const insertIndex = next.findIndex(
+            (w) =>
+              idxInUnshuffled > puzzle.words.findIndex((p) => p.id === w.id)
+          );
           next.splice(insertIndex === -1 ? next.length : insertIndex, 0, word);
           if (next.length === 4) setStatus("submittable");
         }
@@ -55,7 +60,9 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
     await sleep(700);
 
     const difficulty = selectedWords[0]?.difficulty;
-    const sameDifficultyCount = selectedWords.filter((word) => word.difficulty === difficulty).length;
+    const sameDifficultyCount = selectedWords.filter(
+      (word) => word.difficulty === difficulty
+    ).length;
 
     if (sameDifficultyCount === 4) {
       const newShuffledWords = [...shuffledWords];
@@ -65,8 +72,13 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
         const idx = newShuffledWords.indexOf(selectedWords[i]);
         if (idx !== i + correctGuesses.length * 4) {
           hasMoved = true;
-          [newShuffledWords[i + correctGuesses.length * 4], newShuffledWords[idx]] = 
-            [newShuffledWords[idx], newShuffledWords[i + correctGuesses.length * 4]];
+          [
+            newShuffledWords[i + correctGuesses.length * 4],
+            newShuffledWords[idx],
+          ] = [
+            newShuffledWords[idx],
+            newShuffledWords[i + correctGuesses.length * 4],
+          ];
         }
       }
 
@@ -83,27 +95,33 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
         const oneDifferent =
           selectedWords.filter((word) => word.difficulty !== difficulty)
             .length === 1;
-
       }
       if (sameDifficultyCount === 1) {
         const endDifficulty = selectedWords.at(-1)?.difficulty;
         const otherThreeSame =
           selectedWords.filter((word) => word.difficulty === endDifficulty)
             .length === 3;
-
       }
       setStatus("failure");
 
       await sleep(400);
       setGuesses((prev) => [...prev, { words: selectedWords, correct: false }]);
       if (correctGuesses.length + 3 === guesses.length) {
+        const solvedWords = [...puzzle.words]; 
+        setShuffledWords(solvedWords);
+        await sleep(1000);
         return setStatus("complete");
       }
     }
-    setStatus("guessing");
 
     setStatus("guessing");
-  }, [selectedWords, shuffledWords, correctGuesses.length, status, guesses.length]);
+  }, [
+    selectedWords,
+    shuffledWords,
+    correctGuesses.length,
+    status,
+    guesses.length,
+  ]);
 
   return {
     status,

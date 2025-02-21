@@ -1,5 +1,5 @@
 import { View, Image, useWindowDimensions, Text } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
@@ -14,22 +14,20 @@ import Animated, {
 } from "react-native-reanimated";
 
 import * as Haptic from "expo-haptics";
-import { BlurView } from "expo-blur";
 
 type MarqueeItemProps = {
-  event: any;
   index: number;
   scroll: SharedValue<number>;
   containerWidth: number;
   itemWidth: number;
 };
 const MarqueeItem = ({
-  event,
   index,
   scroll,
   containerWidth,
   itemWidth,
-}: MarqueeItemProps) => {
+  children
+}: PropsWithChildren<MarqueeItemProps>) => {
   const { width: screenWidth } = useWindowDimensions();
 
   const shift = (containerWidth - screenWidth) / 2;
@@ -47,14 +45,14 @@ const MarqueeItem = ({
 
     const rotation = interpolate(
       position,
-      [-itemWidth, 0, screenWidth - itemWidth, screenWidth],
-      [-1, 0, 1, 0]
+      [ 0, screenWidth - itemWidth],
+      [-1,  1]
     );
 
     const translateY = interpolate(
       position,
-      [-itemWidth, 0, screenWidth - itemWidth, screenWidth],
-      [3, 0, 3, 0]
+      [ 0, (screenWidth - itemWidth) / 2, screenWidth - itemWidth],
+      [3, 0, 3]
     );
 
     return {
@@ -64,53 +62,32 @@ const MarqueeItem = ({
   });
 
   return (
+
     <Animated.View
-      className="absolute h-full  p-2 shadow-md "
+      className="absolute h-full  p-2  "
       style={[{ width: itemWidth, transformOrigin: "bottom" }, animatedStyle]}
     >
-      <View
-        className="h-full w-full rounded-3xl"
-        style={{ backgroundColor: event.color }}
-      >
-        <View
-          style={{
-            borderRadius: 36, 
-            overflow: "hidden", 
-            alignSelf: "flex-start",
-            maxWidth: "50%",
-          }}
-          className="top-4 left-4 "
-        >
-          <BlurView
-            style={{
-              padding: 4,
-              paddingHorizontal: 10,
-            }}
-            tint="dark"
-            intensity={50}
-          >
-            <Text className="text-white font-bold text-center">
-              {event.type}
-            </Text>
-          </BlurView>
-        </View>
-      </View>
+      {children}
+
 
       {/* <Image source={event.image}  /> */}
     </Animated.View>
+
   );
 };
 
 const Marquee = ({
-  events,
+  items,
   onIndexChange,
+  renderItem,
 }: {
-  events: any[];
+  items: any[];
   onIndexChange?: (index: number) => void;
+  renderItem: ({item, index}: {item: any, index: number}) => React.ReactNode;
 }) => {
   const { width: screenWidth } = useWindowDimensions();
   const itemWidth = screenWidth * 0.65;
-  const containerWidth = events.length * itemWidth;
+  const containerWidth = items.length * itemWidth;
   const shift = (containerWidth - screenWidth) / 2;
 
   const scroll = useSharedValue(-shift);
@@ -119,6 +96,8 @@ const Marquee = ({
   const isUserScrolling = useSharedValue(false);
 
   const [activeIndex, setActiveIndex] = useState(0);
+
+  
 
   useEffect(() => {
     if (onIndexChange) {
@@ -134,13 +113,13 @@ const Marquee = ({
         ((adjustedScroll % containerWidth) + containerWidth) % containerWidth;
 
       let newIndex = Math.round(normalizedScroll / itemWidth);
-      newIndex = Math.max(0, Math.min(newIndex, events.length - 1));
+      newIndex = Math.max(0, Math.min(newIndex, items.length - 1));
 
       if (newIndex !== activeIndex) {
         runOnJS(setActiveIndex)(newIndex);
 
         if (isUserScrolling.value) {
-          runOnJS(Haptic.impactAsync)(Haptic.ImpactFeedbackStyle.Medium);
+          runOnJS(Haptic.impactAsync)(Haptic.ImpactFeedbackStyle.Soft);
         }
       }
     }
@@ -174,15 +153,17 @@ const Marquee = ({
     <GestureDetector gesture={gesture}>
       <View className="h-full flex-row overflow-hidden" >
         {/* <Text className = "text-2xl text-white">{activeIndex}</Text> */}
-        {events.map((event, index) => (
+        {items.map((item, index) => (
           <MarqueeItem
-            key={event.id}
-            event={event}
+            key={item.id}
             index={index}
             scroll={scroll}
             containerWidth={containerWidth}
             itemWidth={itemWidth}
-          />
+            
+          >
+            {renderItem({item, index})}
+          </MarqueeItem>
         ))}
       </View>
     </GestureDetector>

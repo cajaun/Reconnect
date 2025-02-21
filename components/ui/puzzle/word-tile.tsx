@@ -57,7 +57,7 @@ const WordTile = ({ wordObject }: WordTileProps) => {
   return (
     <Animated.View className="absolute h-1/4 w-1/4 p-1" style={animatedStyle}>
       <Pressable
-        className={`h-full w-full rounded-md font-bold transition-transform ease-in-out ${
+        className={`h-full w-full rounded-md font-bold transition-transform ease-in-out active:scale-90 ${
           selected ? "bg-darkGray dark:bg-disabled-gray" : "bg-lightGray"
         } ${selected && status === "pending" && `animate-bounce-up`} ${selected && status === "failure" && `animate-shake`}`}
         onPress={() => onWordClick(wordObject)}

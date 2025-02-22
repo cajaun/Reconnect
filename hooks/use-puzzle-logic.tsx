@@ -124,7 +124,6 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
 
 
       if (correctGuesses.length + 3 === guesses.length) {
-        const delayBetweenRows = 1000;
         const remainingWords = [...shuffledWords];
       
         const groupedWords: Word[][] = [];
@@ -140,7 +139,8 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
           });
         }
       
-   
+       
+      
         const newOrderedWords = [
           ...correctGuesses.flatMap((guess) => guess.words),
           ...groupedWords.flat(),
@@ -151,39 +151,23 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
             index === self.findIndex((t) => t.id === value.id)
         );
       
-
         setShuffledWords(uniqueWords);
 
-        console.log(shuffledWords);
-        console.log(uniqueWords)
-      
-      
-        const processRowWithDelay = async (row: Word[]) => {
-          await sleep(delayBetweenRows); 
-          setGuesses((prevGuesses) => [
-            ...prevGuesses,
-            ...row.map((word) => ({
-              words: [word],
-              correct: true,
-            })),
-          ]);
-        };
-      
+       
 
-        for (let i = 0; i < groupedWords.length; i++) {
-          const row = groupedWords[i];
-          await processRowWithDelay(row)
-        }
-      
-        toast.success("Solved!", {
-          description: "Everything worked as expected.",
-          duration: 6000,
-          position: "bottom-center",
-        });
-      
+        await sleep(5000);
+
+        setGuesses((prevGuesses) => [
+          ...prevGuesses,
+          ...groupedWords.map((group) => ({
+            words: group,  
+            correct: true,
+          })),
+        ]);
+        
+
         return setStatus("complete");
       }
-      
       
     }
 

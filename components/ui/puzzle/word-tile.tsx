@@ -31,6 +31,8 @@ const WordTile = ({ wordObject }: WordTileProps) => {
           categoryDifficulty === difficulty
       );
 
+
+
       const color = difficultyToColor[difficulty]
       return (
         <View

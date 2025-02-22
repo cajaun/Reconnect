@@ -1,0 +1,98 @@
+[
+  {
+    "difficulty": "Tricky",
+    "id": "word16",
+    "puzzleId": "puzzle-1",
+    "word": "RACECAR"
+  },
+  {
+    "difficulty": "Tricky",
+    "id": "word15",
+    "puzzleId": "puzzle-1",
+    "word": "MOM"
+  },
+  {
+    "difficulty": "Tricky",
+    "id": "word14",
+    "puzzleId": "puzzle-1",
+    "word": "LEVEL"
+  },
+  {
+    "difficulty": "Tricky",
+    "id": "word13",
+    "puzzleId": "puzzle-1",
+    "word": "KAYAK"
+  },
+  {
+    "difficulty": "Difficult",
+    "id": "word11",
+    "puzzleId": "puzzle-1",
+    "word": "SHIFT"
+  },
+  {
+    "difficulty": "Straightforward",
+    "id": "word4",
+    "puzzleId": "puzzle-1",
+    "word": "SNOW"
+  },
+  {
+    "difficulty": "Difficult",
+    "id": "word12",
+    "puzzleId": "puzzle-1",
+    "word": "TAB"
+  },
+  {
+    "difficulty": "Medium",
+    "id": "word7",
+    "puzzleId": "puzzle-1",
+    "word": "JAZZ"
+  },
+  {
+    "difficulty": "Difficult",
+    "id": "word9",
+    "puzzleId": "puzzle-1",
+    "word": "OPTION"
+  },
+  {
+    "difficulty": "Medium",
+    "id": "word6",
+    "puzzleId": "puzzle-1",
+    "word": "HEAT"
+  },
+  {
+    "difficulty": "Straightforward",
+    "id": "word1",
+    "puzzleId": "puzzle-1",
+    "word": "HAIL"
+  },
+  {
+    "difficulty": "Medium",
+    "id": "word5",
+    "puzzleId": "puzzle-1",
+    "word": "BUCKS"
+  },
+  {
+    "difficulty": "Medium",
+    "id": "word8",
+    "puzzleId": "puzzle-1",
+    "word": "NETS"
+  },
+  {
+    "difficulty": "Difficult",
+    "id": "word10",
+    "puzzleId": "puzzle-1",
+    "word": "RETURN"
+  },
+  {
+    "difficulty": "Straightforward",
+    "id": "word3",
+    "puzzleId": "puzzle-1",
+    "word": "SLEET"
+  },
+  {
+    "difficulty": "Straightforward",
+    "id": "word2",
+    "puzzleId": "puzzle-1",
+    "word": "RAIN"
+  }
+]

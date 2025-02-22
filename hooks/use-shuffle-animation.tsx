@@ -4,6 +4,7 @@ import { Animated } from "react-native";
 const useShuffleAnimation = (location: number) => {
   const row = Math.floor(location / 4);
   const col = location % 4;
+  const duration = 375
 
   const animatedTop = useRef(new Animated.Value(row * 25)).current;
   const animatedLeft = useRef(new Animated.Value(col * 25)).current;
@@ -11,13 +12,13 @@ const useShuffleAnimation = (location: number) => {
   useEffect(() => {
     Animated.timing(animatedTop, {
       toValue: row * 25,
-      duration: 400,
+      duration: duration,
       useNativeDriver: false,
     }).start();
 
     Animated.timing(animatedLeft, {
       toValue: col * 25,
-      duration: 400,
+      duration: duration,
       useNativeDriver: false,
     }).start();
   }, [row, col]);

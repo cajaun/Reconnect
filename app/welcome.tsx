@@ -144,7 +144,7 @@ const Welcome = () => {
                         paddingHorizontal: 10,
                       }}
                       tint="dark"
-                      intensity={50}
+                      intensity={40}
                     >
                       <SymbolView
                           name={item.icon}

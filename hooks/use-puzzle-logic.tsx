@@ -3,6 +3,7 @@ import { shuffle as arrayShuffle, sleep } from "@/utils/puzzle-utils";
 import { Guess, Puzzle, Word } from "@/types/puzzle";
 import { Status } from "@/types/status";
 import { toast } from 'sonner-native';
+import { autoSolve } from "@/functions/auto-solve";
 
 export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
   const [shuffledWords, setShuffledWords] = useState(initialShuffle);
@@ -83,6 +84,8 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
         }
       }
 
+
+
       setShuffledWords(newShuffledWords);
       if (hasMoved) await sleep(500);
       setSelectedWords([]);
@@ -105,7 +108,11 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
           selectedWords.filter((word) => word.difficulty !== difficulty)
             .length === 1;
             if (oneDifferent) {
-              toast("One away...");
+              toast.error("One away", {
+                description: "Everything worked as expected.",
+                duration: 6000,
+                position: "bottom-center",
+              });
             }
       }
       if (sameDifficultyCount === 1) {
@@ -114,7 +121,11 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
           selectedWords.filter((word) => word.difficulty === endDifficulty)
             .length === 3;
             if (otherThreeSame) {
-              toast("One away...");
+              toast.error("One away", {
+                description: "Everything worked as expected.",
+                duration: 6000,
+                position: "bottom-center",
+              });
             }
       }
       setStatus("failure");
@@ -122,51 +133,19 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
       await sleep(400);
       setGuesses((prev) => [...prev, { words: selectedWords, correct: false }]);
 
+    
+
 
       if (correctGuesses.length + 3 === guesses.length) {
-        const remainingWords = [...shuffledWords];
-      
-        const groupedWords: Word[][] = [];
-        while (remainingWords.length) {
-          const groupDifficulty = remainingWords[0].difficulty;
-          const group = remainingWords
-            .filter((word) => word.difficulty === groupDifficulty)
-            .slice(0, 4);
-          groupedWords.push(group);
-          group.forEach((word) => {
-            const index = remainingWords.indexOf(word);
-            if (index > -1) remainingWords.splice(index, 1);
-          });
-        }
-      
-       
-      
-        const newOrderedWords = [
-          ...correctGuesses.flatMap((guess) => guess.words),
-          ...groupedWords.flat(),
-        ];
-      
-        const uniqueWords = newOrderedWords.filter(
-          (value, index, self) =>
-            index === self.findIndex((t) => t.id === value.id)
-        );
-      
-        setShuffledWords(uniqueWords);
-
-       
-
-        await sleep(5000);
-
-        setGuesses((prevGuesses) => [
-          ...prevGuesses,
-          ...groupedWords.map((group) => ({
-            words: group,  
-            correct: true,
-          })),
-        ]);
-        
-
-        return setStatus("complete");
+        autoSolve({
+          guesses,
+          shuffledWords,
+          correctGuesses,
+          setShuffledWords,
+          setGuesses,
+          setStatus,
+          setSelectedWords,
+        });
       }
       
     }

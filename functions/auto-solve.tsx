@@ -39,6 +39,7 @@ export const autoSolve = async ({
 
     // group words from before for efficient lookups
     const groupedWordsByDifficulty = new Map<string, Word[]>();
+    
     for (const word of newShuffledWords) {
       if (!groupedWordsByDifficulty.has(word.difficulty)) {
         groupedWordsByDifficulty.set(word.difficulty, []);

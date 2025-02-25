@@ -1,5 +1,3 @@
-// Puzzle-Data.ts
-
 import { Puzzle } from "@/types/puzzle";
 import { Difficulty } from "@/types/difficulty";
 

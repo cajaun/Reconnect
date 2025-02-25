@@ -9,6 +9,7 @@ module.exports = {
         "fade-in": "fade-in 300ms ease-out",
         "fade-out": "fade-out 300ms ease-in forwards",
         "bounce-up": "bounce-up 400ms ease-in-out",
+        scaleBounce: 'scaleBounce 0.6s ease-in-out',
         shake: "shake 400ms ease-out",
       },
       colors: {
@@ -16,7 +17,10 @@ module.exports = {
         darkGray: "#5A594E",
       },
       keyframes: {
-
+        scaleBounce: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(3)' }, // Adjust the scale factor as needed
+        },
         "bounce-up": {
           "0%": {
             transform: "translateY(0)",

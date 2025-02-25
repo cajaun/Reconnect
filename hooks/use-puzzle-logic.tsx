@@ -1,9 +1,10 @@
 import { useState, useMemo, useCallback } from "react";
-import { shuffle as arrayShuffle, sleep } from "@/utils/puzzle-utils";
+import { shuffle as arrayShuffle, sleep} from "@/utils/puzzle-utils";
 import { Guess, Puzzle, Word } from "@/types/puzzle";
 import { Status } from "@/types/status";
-import { toast } from 'sonner-native';
-import { autoSolve } from "@/functions/auto-solve";
+import { sortSelectedWords, toggleWordSelection } from "@/utils/word-manager";
+import { getCorrectGuesses, handleCorrectGuess, handleIncorrectGuess, isCorrectGuess } from "@/utils/guess-manager";
+
 
 export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
   const [shuffledWords, setShuffledWords] = useState(initialShuffle);
@@ -11,16 +12,11 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
   const [status, setStatus] = useState<Status>("guessing");
   const [guesses, setGuesses] = useState<Guess[]>([]);
 
-  const sortedSelectedWords = useMemo(() => {
-    return [...selectedWords].sort(
-      (a, b) => shuffledWords.indexOf(a) - shuffledWords.indexOf(b)
-    );
-  }, [shuffledWords, selectedWords]);
+  const sortedSelectedWords = useMemo(() => sortSelectedWords(selectedWords, shuffledWords), [shuffledWords, selectedWords]);
 
-  const correctGuesses = useMemo(
-    () => guesses.filter(({ correct }) => correct),
-    [guesses]
-  );
+
+  const correctGuesses = useMemo(() => getCorrectGuesses(guesses), [guesses]);
+
 
   const shuffle = useCallback(
     () =>
@@ -32,132 +28,24 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
 
   const onWordClick = useCallback(
     (word: Word) => {
-      setSelectedWords((prev) => {
-        const next = [...prev];
-        const idxInPrev = prev.indexOf(word);
-        if (idxInPrev !== -1) {
-          next.splice(idxInPrev, 1);
-          if (status === "submittable") setStatus("guessing");
-        } else {
-          if (next.length === 4) return next;
-          const idxInUnshuffled = puzzle.words.findIndex(
-            (w) => w.id === word.id
-          );
-          const insertIndex = next.findIndex(
-            (w) =>
-              idxInUnshuffled > puzzle.words.findIndex((p) => p.id === w.id)
-          );
-          next.splice(insertIndex === -1 ? next.length : insertIndex, 0, word);
-          if (next.length === 4) setStatus("submittable");
-        }
-        return next;
-      });
+      setSelectedWords((prev) => toggleWordSelection(prev, word, status, setStatus, puzzle.words));
     },
     [status, puzzle.words]
   );
+  
 
   const onSubmit = useCallback(async () => {
     if (status !== "submittable") return;
     setStatus("pending");
     await sleep(700);
-
-    const difficulty = selectedWords[0]?.difficulty;
-    const sameDifficultyCount = selectedWords.filter(
-      (word) => word.difficulty === difficulty
-    ).length;
-
-    if (sameDifficultyCount === 4) {
-      const newShuffledWords = [...shuffledWords];
-      let hasMoved = false;
-
-      for (let i = 0; i < 4; i++) {
-        const idx = newShuffledWords.indexOf(selectedWords[i]);
-        if (idx !== i + correctGuesses.length * 4) {
-          hasMoved = true;
-          [
-            newShuffledWords[i + correctGuesses.length * 4],
-            newShuffledWords[idx],
-          ] = [
-            newShuffledWords[idx],
-            newShuffledWords[i + correctGuesses.length * 4],
-          ];
-        }
-      }
-
-
-
-      setShuffledWords(newShuffledWords);
-      if (hasMoved) await sleep(500);
-      setSelectedWords([]);
-      setGuesses((prev) => [...prev, { words: selectedWords, correct: true }]);
-      if (correctGuesses.length === 3) {
-        await sleep(1000);
-
-        toast.success('Successfully solved!', {
-          description: 'Everything worked as expected.',
-          duration: 6000,
-          position: "bottom-center",
-        });
-
-        return setStatus("complete");
-        
-      }
+  
+    if (isCorrectGuess(selectedWords)) {
+      await handleCorrectGuess(selectedWords, shuffledWords, correctGuesses, setShuffledWords, setGuesses, setStatus, setSelectedWords);
     } else {
-      if (sameDifficultyCount === 3) {
-        const oneDifferent =
-          selectedWords.filter((word) => word.difficulty !== difficulty)
-            .length === 1;
-            if (oneDifferent) {
-              toast.error("One away", {
-                description: "Everything worked as expected.",
-                duration: 6000,
-                position: "bottom-center",
-              });
-            }
-      }
-      if (sameDifficultyCount === 1) {
-        const endDifficulty = selectedWords.at(-1)?.difficulty;
-        const otherThreeSame =
-          selectedWords.filter((word) => word.difficulty === endDifficulty)
-            .length === 3;
-            if (otherThreeSame) {
-              toast.error("One away", {
-                description: "Everything worked as expected.",
-                duration: 6000,
-                position: "bottom-center",
-              });
-            }
-      }
-      setStatus("failure");
-
-      await sleep(400);
-      setGuesses((prev) => [...prev, { words: selectedWords, correct: false }]);
-
-    
-
-
-      if (correctGuesses.length + 3 === guesses.length) {
-        autoSolve({
-          guesses,
-          shuffledWords,
-          correctGuesses,
-          setShuffledWords,
-          setGuesses,
-          setStatus,
-          setSelectedWords,
-        });
-      }
-      
+      await handleIncorrectGuess(selectedWords, guesses, shuffledWords, correctGuesses, setGuesses, setStatus, setSelectedWords, setShuffledWords);
     }
-
-    setStatus("guessing");
-  }, [
-    selectedWords,
-    shuffledWords,
-    correctGuesses.length,
-    status,
-    guesses.length,
-  ]);
+  }, [selectedWords, shuffledWords, correctGuesses.length, status, guesses.length]);
+  
 
   return {
     status,

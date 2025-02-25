@@ -2,8 +2,6 @@ import { createContext, useContext, type ReactNode } from "react";
 import { usePuzzleLogic } from "@/hooks/use-puzzle-logic";
 import { Puzzle, Word } from "@/types/puzzle";
 
-
-
 type PuzzleContextValues = ReturnType<typeof usePuzzleLogic>;
 
 const PuzzleContext = createContext<PuzzleContextValues | null>(null);

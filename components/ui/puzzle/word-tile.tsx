@@ -51,7 +51,7 @@ const WordTile = ({ wordObject }: WordTileProps) => {
             style={{ backgroundColor: color }}
           >
             <FadeIn >
-              <Text className="text-xl font-bold uppercase dark:text-black mx-auto">
+              <Text className="text-xl font-bold uppercase text-black mx-auto">
                 {category?.description}
               </Text>
               <Text className = "mx-auto">{correct.words.map(({ word }) => word).join(", ")}</Text>
@@ -66,7 +66,7 @@ const WordTile = ({ wordObject }: WordTileProps) => {
   return (
     <Animated.View className="absolute h-1/4 w-1/4 p-1" style={animatedStyle}>
       <Pressable
-        className={`h-full w-full rounded-md font-bold transition-transform ease-in-out active:scale-90 ${
+        className={` h-full w-full rounded-md font-bold transition-transform ease-in-out active:scale-90 ${
           selected ? "bg-darkGray " : "bg-lightGray  "
         } ${selected && status === "pending" && `animate-bounce-up`} ${
           selected && status === "failure" && `animate-shake`

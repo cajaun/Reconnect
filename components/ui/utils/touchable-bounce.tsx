@@ -54,6 +54,7 @@ const TouchableBounce = React.forwardRef<View, TouchableScaleProps>(
       <RNTouchableBounce
         {...props}
         ref={ref}
+        style={[style]}
         onPressIn={(ev: any) => {
           onSensory();
           onPressIn?.(ev);

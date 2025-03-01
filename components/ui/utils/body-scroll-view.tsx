@@ -12,6 +12,15 @@ export function useBottomTabOverflow() {
   return tabHeight - bottom;
 }
 
+export function useTopTabOverflow() {
+  let tabHeight = 0;
+  try {
+    tabHeight = useBottomTabBarHeight();
+  } catch {}
+  const { top} = useSafeAreaInsets();
+  return tabHeight + top;
+}
+
 export const BodyScrollView = forwardRef<any, ScrollViewProps>((props, ref) => {
   const paddingBottom = useBottomTabOverflow();
   return (

@@ -64,7 +64,7 @@ export const handleIncorrectGuess = async (
     sameDifficultyCount === 3 ||
     selectedWords.filter((word) => word.difficulty === selectedWords.at(-1)?.difficulty).length === 3
   ) {
-    toast.error("One away", { duration: 6000, position: "bottom-center" });
+    toast.info("One away...", { duration: 6000, position: "bottom-center" });
   }
 
   setStatus("failure");

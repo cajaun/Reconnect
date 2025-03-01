@@ -14,7 +14,8 @@ export default function RootLayout() {
     <GestureHandlerRootView>
       <StatusBar style="auto" />
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name = "(puzzles)" options={{ headerShown: false }}/>
+
+        <Stack.Screen name = "puzzles" options={{ headerShown: false }}/>
    
 
       </Stack>

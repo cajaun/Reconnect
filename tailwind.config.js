@@ -15,11 +15,12 @@ module.exports = {
       colors: {
         lightGray: "#EFEFE6",
         darkGray: "#5A594E",
+        disabledGray: "#7F7F7F",
       },
       keyframes: {
         scaleBounce: {
           '0%, 100%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(3)' }, // Adjust the scale factor as needed
+          '50%': { transform: 'scale(3)' }, 
         },
         "bounce-up": {
           "0%": {

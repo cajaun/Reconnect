@@ -95,7 +95,7 @@ const Welcome = () => {
 
   const handlePlay = () => {
     Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Medium);
-    router.push("/(puzzles)");
+    router.push("/puzzles");
   };
 
   return (

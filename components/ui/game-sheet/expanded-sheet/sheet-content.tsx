@@ -26,6 +26,8 @@ import PuzzleBoard from "../../puzzle/puzzle-board";
 import MockPuzzleBoard from "../../puzzle/mock-board";
 import { SymbolView } from "expo-symbols";
 import { PressableScale } from "../../utils/pressable-scale";
+import MistakesTracker from "../../puzzle/mistakes";
+import PuzzleControls from "../../puzzle/puzzle-controls";
 
 type SheetContentProps = {
   progress: SharedValue<number>;
@@ -75,11 +77,8 @@ export const SheetContent = ({
     marginTop: interpolate(progress.value, [0, 1], [BaseOffset, 48]),
   }));
 
-
-
-  
   const rTopTextStyle = useAnimatedStyle(() => {
-    const top = interpolate(progress.value, [0, 1], [-BaseOffset + 50, 50]);
+    const top = interpolate(progress.value, [0, 1], [-BaseOffset + 50, 40]);
     const translateY = interpolate(progress.value, [0, 1], [0, -25]);
     const opacity = interpolate(progress.value, [0, 0.6], [1, 0]);
     return {
@@ -92,41 +91,45 @@ export const SheetContent = ({
     };
   });
 
-    const rKnobStyle = useAnimatedStyle(() => {
-    const top = interpolate(progress.value, [0, 1], [-BaseOffset + 50, 50]);
+  const rKnobStyle = useAnimatedStyle(() => {
+    const top = interpolate(progress.value, [0, 1], [-BaseOffset + 50, 40]);
     const translateY = interpolate(progress.value, [0, 1], [0, -25]);
-  
+
     return {
       top,
       transform: [{ translateY }],
       alignSelf: "center",
-      opacity: interpolate(progress.value, [0.6, 0.75], [0, 1]), 
+      opacity: interpolate(progress.value, [0.6, 0.75], [0, 1]),
     };
   });
 
   const rDateStyle = useAnimatedStyle(() => {
-    const fontSize = interpolate(progress.value, [0, 1], [25, 20]);
-    const top = interpolate(progress.value, [0, 0.95], [-BaseOffset + 90, safeTop - 30]);
+    const fontSize = interpolate(progress.value, [0, 1], [25, 17]);
+    const top = interpolate(
+      progress.value,
+      [0, 0.95],
+      [-BaseOffset + 90, safeTop - 15]
+    );
     const color = interpolateColor(
       progress.value,
       [0, 1],
-      [ '#DFDFDF','#000000', ]
+      ["#BFBFBF", "#000000"]
     );
-  
+
     return {
       fontSize,
       top,
-      alignSelf: 'center',
+      alignSelf: "center",
       opacity: interpolate(progress.value, [0, 0.95], [1, 1]),
       color, // Animated color
     };
   });
 
   const rBoardStyle = useAnimatedStyle(() => {
-    const shouldShow = progress.value > 0.75;
+    const shouldShow = progress.value > 0.6;
     return {
-      opacity: interpolate(progress.value, [0.75, 1], [0, 1]),
-      transform: [{ scale: interpolate(progress.value, [0.75, 1], [0.8, 1]) }],
+      opacity: interpolate(progress.value, [0.6, 1], [0, 1]),
+      transform: [{ scale: interpolate(progress.value, [0.6, 1], [0.75, 1]) }],
       display: shouldShow ? "flex" : "none",
     };
   });
@@ -144,10 +147,10 @@ export const SheetContent = ({
       top: interpolate(
         progress.value,
         [0, 0.95],
-        [-BaseOffset + 90, safeTop - 40]
+        [-BaseOffset + 90, safeTop - 20]
       ),
-      left: 16, 
-      zIndex: 1002, 
+      left: 16,
+      zIndex: 1002,
     };
   });
 
@@ -164,129 +167,181 @@ export const SheetContent = ({
       top: interpolate(
         progress.value,
         [0, 0.95],
-        [-BaseOffset + 90, safeTop - 40]
+        [-BaseOffset + 90, safeTop - 20]
       ),
       right: 16, // Position it on the far right
       zIndex: 1002, // Ensure it's above the sheet and knob
     };
   });
 
+  const rMistakeStyle = useAnimatedStyle(() => {
+    const mistakeOpacity = interpolate(progress.value, [0, 0.6], [0, 1]);
+    return {
+      opacity: mistakeOpacity,
+      transform: [{ scale: interpolate(progress.value, [0.75, 1], [0.95, 1]) }],
+      position: "absolute",
+      top: interpolate(
+        progress.value,
+        [0, 0.95],
+        [-BaseOffset + 120, safeTop - 5]
+      ),
+      zIndex: 1002,
+    };
+  });
 
+  const rControlsStyle = useAnimatedStyle(() => {
+    const controlsOpacity = interpolate(progress.value, [0, 0.6], [0, 1]);
+
+    return {
+      opacity: controlsOpacity,
+      transform: [{ scale: interpolate(progress.value, [0.75, 1], [0.95, 1]) }],
+      position: "absolute",
+      bottom: interpolate(
+        progress.value,
+        [0, 0.95],
+        [-BaseOffset + 250, safeTop]
+      ),
+      left: 0,
+      zIndex: 1002,
+    };
+  });
 
   return (
-    <Animated.View style={[rContainerStyle, styles.container]}>
+    <Animated.View
+      style={[
+        rContainerStyle,
+        { flex: 1, width: "100%", justifyContent: "flex-start" },
+      ]}
+    >
+      <Animated.View
+        style={[
+          rKnobStyle,
+          {
+            top: safeTop + 8,
+            position: "absolute",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            zIndex: 1001,
+          },
+          ,
+        ]}
+      >
+        <View
+          style={{
+            width: 48,
+            height: 6,
+            borderRadius: 36,
+            backgroundColor: "#DFDFDF",
+          }}
+        />
+      </Animated.View>
 
-<Animated.View
+      <PuzzleContextProvider
+        puzzle={currentPuzzle}
+        initialShuffle={shuffledWords}
+      >
+        <Animated.Text
           style={[
-            rKnobStyle,
+            rTopTextStyle,
             {
-              top: safeTop + 8,
+              color: "black",
+              fontWeight: "bold",
+              textAlign: "center",
+              position: "absolute",
+              zIndex: 10,
+              width: "100%",
             },
-            styles.knobContainer,
           ]}
         >
-          <View style={styles.knob} />
+          Thursday
+        </Animated.Text>
+
+        <Animated.Text
+          style={[
+            rDateStyle,
+            {
+              textAlign: "center",
+              position: "absolute",
+              zIndex: 9,
+              width: "100%",
+              fontWeight: "bold",
+            },
+          ]}
+        >
+          May 15
+        </Animated.Text>
+
+        <Animated.View
+          style={[
+            rMistakeStyle,
+            {
+              position: "absolute",
+              zIndex: 9,
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            },
+          ]}
+        >
+          <MistakesTracker />
         </Animated.View>
 
-      <Animated.Text style={[rTopTextStyle, styles.topText]}>
-        Thursday
-      </Animated.Text>
+        <Animated.View style={[rLeftButtonStyle]}>
+          <PressableScale
+            onPress={() => {
+              progress.value = withTiming(0, {
+                duration: 350,
+                easing: EasingsUtils.inOut,
+              });
+            }}
+            className="w-14 h-14 rounded-full items-center bg-[#F2F2F2] justify-center"
+          >
+            <SymbolView
+              name="chevron.down"
+              tintColor={"black"}
+              weight="bold"
+            />
+          </PressableScale>
+        </Animated.View>
 
-      <Animated.Text style={[rDateStyle, styles.dateText]}>
-        May 15
-      </Animated.Text>
+        <Animated.View style={[rRightButtonStyle]}>
+          <PressableScale
+            onPress={() => console.log("Left button is being pressed")}
+            className="w-14 h-14 rounded-full items-center bg-[#F2F2F2] justify-center"
+          >
+            <SymbolView name="gearshape.fill" tintColor={"black"} weight="bold" />
+          </PressableScale>
+        </Animated.View>
 
-      {/* Left Button */}
-      <Animated.View style={[rLeftButtonStyle]}>
-        <PressableScale
-          onPress={() => {
-            progress.value = withTiming(0, {
-              duration: 350,
-              easing: EasingsUtils.inOut,
-            });
-          }}
-          className="w-12 h-12 rounded-full items-center bg-[#DFDFDF] justify-center"
-        >
-          <SymbolView name="chevron.down" tintColor={"black"} weight="semibold"  />
-        </PressableScale>
-      </Animated.View>
-      {/* Right Button */}
-      <Animated.View style={[rRightButtonStyle]}>
-        <PressableScale
-          onPress={() => console.log("Left button is being pressed")}
-          className="w-12 h-12 rounded-full items-center bg-[#DFDFDF] justify-center"
-        >
-          <SymbolView name="gearshape.fill" tintColor={"black"} />
-        </PressableScale>
-      </Animated.View>
-
-      <Animated.View style={[rBoardStyle, styles.boardWrapper]}>
-        <PuzzleContextProvider
-          puzzle={currentPuzzle}
-          initialShuffle={shuffledWords}
+        <Animated.View
+          style={[
+            rBoardStyle,
+            {
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "white",
+            },
+          ]}
         >
           <PuzzleBoard />
-        </PuzzleContextProvider>
-      </Animated.View>
+        </Animated.View>
+
+        <Animated.View
+          style={[
+            rControlsStyle,
+            {
+              position: "absolute",
+              zIndex: 9,
+              width: "100%",
+              alignItems: "center",
+            },
+          ]}
+        >
+          <PuzzleControls />
+        </Animated.View>
+      </PuzzleContextProvider>
     </Animated.View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    justifyContent: "flex-start", // Ensure content starts at the top
-  },
-  topText: {
-    color: "black",
-    fontWeight: "bold",
-    textAlign: "center",
-    position: "absolute",
-    zIndex: 10,
-    width: "100%",
-  },
-  dateText: {
-    textAlign: "center",
-    position: "absolute",
-    zIndex: 9,
-    width: "100%",
-    fontWeight: "bold",
-  },
-  leftButton: {
-    flex: 1,
-    alignItems: "flex-start", // Align to the left
-  },
-  rightButton: {
-    flex: 1,
-    alignItems: "flex-end", // Align to the right
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "black",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: "#ddd",
-    borderRadius: 20,
-  },
-  boardWrapper: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "white",
-  },
-  knobContainer: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    zIndex: 1001,
-  },
-  knob: {
-    width: 48,
-    height: 4,
-    borderRadius: 36,
-    backgroundColor: '#DFDFDF',
-  },
-});

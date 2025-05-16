@@ -44,7 +44,7 @@ export const ExpandedSheet = () => {
       }
 
       progress.value = withTiming(1, {
-        duration: 350,
+        duration: 250,
         easing: EasingsUtils.inOut,
       });
     })
@@ -152,7 +152,7 @@ export const ExpandedSheet = () => {
 const styles = StyleSheet.create({
   knob: {
     width: 98,
-    height: 4,
+    height: 6,
     borderRadius: 36,
     backgroundColor: 'red',
   },

@@ -45,6 +45,13 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
       await handleIncorrectGuess(selectedWords, guesses, shuffledWords, correctGuesses, setGuesses, setStatus, setSelectedWords, setShuffledWords);
     }
   }, [selectedWords, shuffledWords, correctGuesses.length, status, guesses.length]);
+
+  const reset = useCallback(() => {
+    setShuffledWords(arrayShuffle([...initialShuffle], 0)); 
+    setSelectedWords([]);
+    setGuesses([]);
+    setStatus("guessing");
+  }, [initialShuffle]);
   
 
   return {
@@ -58,6 +65,7 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
     guesses,
     shuffle,
     deselect,
+    reset,
     initialShuffle,
     categories: puzzle.categories,
     name: puzzle.name,

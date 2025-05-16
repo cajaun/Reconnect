@@ -1,23 +1,46 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { usePuzzle } from "@/context/puzzle-context";
+import { SymbolView } from "expo-symbols";
+import * as Haptics from 'expo-haptics';
+
+
 
 const MistakesTracker = () => {
   const { correctGuesses, guesses } = usePuzzle();
+  const mistakes = guesses.length - correctGuesses.length;
 
   return (
-    <View className="flex-row items-center gap-2.5">
-      <Text>Mistakes remaining:</Text>
-      <View className="flex w-24 flex-row items-center gap-2.5">
-        {Array.from(Array(4)).map((_, idx) => (
-          <View
-            key={idx}
-            className={`h-4 w-4 rounded-full bg-darkGray transition-transform duration-300 ${
-              idx + 1 > 4 - (guesses.length - correctGuesses.length) ? "scale-0" : "scale-100"
-            }`}
-          />
-        ))}
-      </View>
+
+<View className="flex flex-row items-center gap-1  p-2 rounded-2xl ">
+
+<View className="flex flex-row items-center gap-1 p-2 rounded-2xl">
+      {Array.from(Array(4)).map((_, idx) => {
+    const isMistake = idx < mistakes; 
+
+        return (
+          <View key={idx} className="flex items-center justify-center">
+            <SymbolView
+  name="flame.fill"
+  weight="bold"
+  size={20}
+  tintColor={isMistake ? "black" : "#DFDFDF"}
+  animationSpec={
+    isMistake
+      ? {
+          effect: {
+            type: "bounce",
+            wholeSymbol: true,
+          },
+          speed: 1, 
+        }
+      : undefined
+  }
+/>
+          </View>
+        );
+      })}
     </View>
+      </View>
   );
 };
 

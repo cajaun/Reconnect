@@ -14,6 +14,7 @@ export type PressableScaleProps = {
   onPress?: () => void; 
   style?: StyleProp<ViewStyle>; 
   className?: string;
+  disabled?: boolean;
 };
 
 
@@ -22,12 +23,14 @@ const PressableScale: React.FC<PressableScaleProps> = ({
   onPress,
   style,
   className,
+  disabled,
 }) => {
   // Create a shared value to track the press state
   const active = useSharedValue(false);
 
   // Create a tap gesture handler
   const gesture = Gesture.Tap()
+  .enabled(!disabled)
     .maxDuration(4000) // Set maximum duration for tap gesture
     .onTouchesDown(() => {
       active.value = true; // Mark as active on touch down

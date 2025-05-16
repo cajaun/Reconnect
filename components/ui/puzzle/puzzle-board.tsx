@@ -54,18 +54,24 @@ const PuzzleBoard = () => {
 
   return (
     <View className="relative w-full px-1 ">
-      <View className="flex-col items-center gap-6">
+      <View className="flex-col  ">
+<View className = "flex-fol gap-y-">
+
+
+
+
         <View className="relative flex w-full aspect-square">
           {initialShuffle.map((word, idx) => (
             <WordTile key={idx} wordObject={word} />
           ))}
         </View>
-        <MistakesTracker />
-        <PuzzleControls />
+    
+        </View>
+      
 
-        <Pressable    onPress={handleOpen}>
+        {/* <Pressable    onPress={handleOpen}>
           <Text>Open me</Text>
-        </Pressable>
+        </Pressable> */}
 
         <BottomDrawer
         isOpen={isOpen}

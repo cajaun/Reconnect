@@ -16,6 +16,27 @@ module.exports = {
         lightGray: "#EFEFE6",
         darkGray: "#5A594E",
         disabledGray: "#7F7F7F",
+        light: {
+          text: "#11181C",
+          background: "#fff",
+          tint: "#0a7ea4",
+          icon: "#687076",
+          tabIconDefault: "#687076",
+          tabIconSelected: "#0a7ea4",
+        },
+        dark: {
+          text: "#ECEDEE",
+          background: "#151718",
+          tint: "#fff",
+          icon: "#9BA1A6",
+          tabIconDefault: "#9BA1A6",
+          tabIconSelected: "#fff",
+        },
+        secondary: {
+          100: "#F7F7F7",
+          200: "#F0F2F4",
+          300: "#94999F",
+        },
       },
       keyframes: {
         scaleBounce: {

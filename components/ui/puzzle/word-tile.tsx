@@ -25,8 +25,14 @@ const WordTile = ({ wordObject }: WordTileProps) => {
     () => shuffledWords.indexOf(wordObject),
     [shuffledWords, wordObject]
   );
-  const idxInSelected = sortedSelectedWords.indexOf(wordObject);
-  const selected = idxInSelected !== -1;
+  // const idxInSelected = sortedSelectedWords.indexOf(wordObject);
+  // const selected = idxInSelected !== -1;
+  
+  const selected = sortedSelectedWords.some(
+    w => w.word === wordObject.word && w.difficulty === wordObject.difficulty
+  );
+
+  
   const correct = correctGuesses.find(({ words }) =>
     words.includes(wordObject)
   );
@@ -62,6 +68,7 @@ const WordTile = ({ wordObject }: WordTileProps) => {
     }
     return null;
   }
+
 
   return (
     <Animated.View className="absolute h-1/4 w-1/4 p-1" style={animatedStyle}>

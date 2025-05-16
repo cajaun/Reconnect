@@ -13,6 +13,7 @@ export type PressableScaleProps = {
   children: React.ReactNode; 
   onPress?: () => void; 
   style?: StyleProp<ViewStyle>; 
+  className?: string;
 };
 
 
@@ -20,6 +21,7 @@ const PressableScale: React.FC<PressableScaleProps> = ({
   children,
   onPress,
   style,
+  className,
 }) => {
   // Create a shared value to track the press state
   const active = useSharedValue(false);
@@ -50,7 +52,7 @@ const PressableScale: React.FC<PressableScaleProps> = ({
 
   return (
     <GestureDetector gesture={gesture}>
-      <Animated.View style={[style, rAnimatedStyle]}>{children}</Animated.View>
+      <Animated.View style={[style, rAnimatedStyle]} className={className}>{children}</Animated.View>
     </GestureDetector>
   );
 };

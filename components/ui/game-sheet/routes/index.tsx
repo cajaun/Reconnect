@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
-
+import { ExpandedSheetMutableProgress } from '../shared-progress';
 import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
-import { ExpandedSheet } from '@/components/ui/game-sheet/expanded-sheet';
-import { ExpandedSheetMutableProgress } from '@/components/ui/game-sheet/shared-progress';
+import { ExpandedSheet } from '../expanded-sheet';
+import { Palette } from '../palette';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ExpandablePlayer = () => {

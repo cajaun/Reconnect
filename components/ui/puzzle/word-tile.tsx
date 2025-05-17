@@ -39,6 +39,7 @@ const WordTile = ({ wordObject }: WordTileProps) => {
 
   const { row, animatedStyle } = useShuffleAnimation(location);
 
+  
   if (correct) {
     if (location % 4 === 0) {
       const category = categories.find(
@@ -80,7 +81,7 @@ const WordTile = ({ wordObject }: WordTileProps) => {
         }`}
         onPress={() => onWordClick(wordObject)}
       >
-        <Text className={`text-center text-xl uppercase font-semibold  my-auto ${selected ? "text-black" : "text-black"}` }>
+        <Text className={`text-center text-xl uppercase font-semibold  my-auto ${selected ? "text-white" : "text-black"}` }>
           {word}
         </Text>
       </Pressable>

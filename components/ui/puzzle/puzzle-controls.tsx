@@ -10,32 +10,33 @@ const PuzzleControls = () => {
     <View className="flex-row justify-between items-center w-full px-8">
 
       <PressableScale onPress={reset} 
-      className="rounded-full w-14 h-14 items-center bg-[#F2F2F2]  justify-center">
+      className="rounded-full w-16 h-16 items-center bg-[#F2F2F2]  justify-center ">
         <SymbolView
           name="arrow.counterclockwise"
-          weight="semibold"
+          weight="bold"
           tintColor={"black"}
+          size={25}
         />
       </PressableScale>
 
 
       <View className="flex-row gap-2.5">
-        <PressableScale onPress={shuffle} className="rounded-full w-14 h-14 items-center bg-[#F2F2F2]  justify-center">
-          <SymbolView name="shuffle" tintColor={"black"} weight="bold" />
+        <PressableScale onPress={shuffle} className="rounded-full w-16 h-16 items-center bg-[#F2F2F2]  justify-center">
+          <SymbolView name="shuffle" tintColor={"black"} weight="bold" size={25} />
         </PressableScale>
 
-        <PressableScale onPress={deselect} className="rounded-full w-14 h-14 items-center bg-[#F2F2F2]  justify-center">
-          <SymbolView name="eraser.line.dashed.fill" size={24} tintColor={"black"} weight="bold"  />
+        <PressableScale onPress={deselect} className="rounded-full w-16 h-16 items-center bg-[#F2F2F2]  justify-center">
+          <SymbolView name="eraser.line.dashed.fill" size={25} tintColor={"black"} weight="bold"  />
         </PressableScale>
       </View>
 
      
       <PressableScale
-        className="rounded-full w-14 h-14 items-center bg-[#F2F2F2]  justify-center"
+        className="rounded-full w-16 h-16 items-center bg-[#F2F2F2]  justify-center"
         disabled={status !== "submittable"}
         onPress={onSubmit}
       >
-        <SymbolView name="paperplane.fill" size={24} tintColor={"black"} weight="bold"  />
+        <SymbolView name="paperplane.fill" size={25} tintColor={"black"} weight="bold"  />
       </PressableScale>
     </View>
   );

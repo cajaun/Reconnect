@@ -83,7 +83,7 @@ export const SheetContent = ({
     const opacity = interpolate(progress.value, [0, 0.6], [1, 0]);
     return {
       top,
-      fontSize: interpolate(progress.value, [0, 1], [30, 20]),
+      fontSize: interpolate(progress.value, [0, 1], [30, 3]),
       marginTop: interpolate(progress.value, [0, 1], [0, -24]),
       transform: [{ translateY }],
       alignSelf: "center",
@@ -104,11 +104,11 @@ export const SheetContent = ({
   });
 
   const rDateStyle = useAnimatedStyle(() => {
-    const fontSize = interpolate(progress.value, [0, 1], [25, 17]);
+    const fontSize = interpolate(progress.value, [0, 1], [25, 19]);
     const top = interpolate(
       progress.value,
       [0, 0.95],
-      [-BaseOffset + 90, safeTop - 15]
+      [-BaseOffset + 90, safeTop - 17]
     );
     const color = interpolateColor(
       progress.value,
@@ -150,6 +150,7 @@ export const SheetContent = ({
         [-BaseOffset + 90, safeTop - 20]
       ),
       left: 16,
+      right: 16,
       zIndex: 1002,
     };
   });
@@ -175,17 +176,14 @@ export const SheetContent = ({
   });
 
   const rMistakeStyle = useAnimatedStyle(() => {
-    const mistakeOpacity = interpolate(progress.value, [0, 0.6], [0, 1]);
     return {
-      opacity: mistakeOpacity,
       transform: [{ scale: interpolate(progress.value, [0.75, 1], [0.95, 1]) }],
       position: "absolute",
       top: interpolate(
         progress.value,
         [0, 0.95],
-        [-BaseOffset + 120, safeTop - 5]
+        [-BaseOffset + 120, safeTop - 4]
       ),
-      zIndex: 1002,
     };
   });
 
@@ -229,8 +227,8 @@ export const SheetContent = ({
       >
         <View
           style={{
-            width: 48,
-            height: 6,
+            width: 56,
+            height: 7,
             borderRadius: 36,
             backgroundColor: "#DFDFDF",
           }}
@@ -295,12 +293,13 @@ export const SheetContent = ({
                 easing: EasingsUtils.inOut,
               });
             }}
-            className="w-14 h-14 rounded-full items-center bg-[#F2F2F2] justify-center"
+            className="w-16 h-16 rounded-full items-center bg-[#F2F2F2] justify-center "
           >
             <SymbolView
               name="chevron.down"
               tintColor={"black"}
               weight="bold"
+              size={25}
             />
           </PressableScale>
         </Animated.View>
@@ -308,9 +307,9 @@ export const SheetContent = ({
         <Animated.View style={[rRightButtonStyle]}>
           <PressableScale
             onPress={() => console.log("Left button is being pressed")}
-            className="w-14 h-14 rounded-full items-center bg-[#F2F2F2] justify-center"
+            className="w-16 h-16 rounded-full items-center bg-[#F2F2F2] justify-center"
           >
-            <SymbolView name="gearshape.fill" tintColor={"black"} weight="bold" />
+            <SymbolView name="gearshape.fill" tintColor={"black"} weight="bold" size={25} />
           </PressableScale>
         </Animated.View>
 

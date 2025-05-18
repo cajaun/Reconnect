@@ -1,22 +1,23 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import "./global.css";
 import "@/reanimatedConfg";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { Toaster } from 'sonner-native';
-import { useFonts } from "expo-font";
+import { useEffect } from "react";
+import { allPuzzles } from "@/utils/puzzle-data";
 
 
 
 
 export default function RootLayout() {
 
-  const [loaded, error] = useFonts({
-    "OpenRunde-Bold": require("../assets/fonts/OpenRunde-Bold.otf"),
-    "OpenRunde-Medium": require("../assets/fonts/OpenRunde-Medium.otf"),
-    "OpenRunde-Regular": require("../assets/fonts/OpenRunde-Regular.otf"),
-    "OpenRunde-Semibold": require("../assets/fonts/OpenRunde-Semibold.otf"),
-  });
+  useEffect(() => {
+    // Redirect to the first puzzle when app loads
+    if (allPuzzles.length > 0) {
+      router.replace(`/${allPuzzles[0].id}`);
+    }
+  }, []);
 
   return (
     
@@ -25,7 +26,7 @@ export default function RootLayout() {
       
       <Stack screenOptions={{ headerShown: false }}>
 
-
+      <Stack.Screen name="[id]" />
 
 
       </Stack>

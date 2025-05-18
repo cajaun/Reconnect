@@ -1,4 +1,4 @@
-import { makeMutable } from 'react-native-reanimated';
+import { makeMutable } from "react-native-reanimated";
 
-// Kind of a Global Shared Value
-export const ExpandedSheetMutableProgress = makeMutable(0);
+
+export const GameSheetMutableProgress = makeMutable(0);

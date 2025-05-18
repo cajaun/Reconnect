@@ -5,7 +5,7 @@ export const difficultyArray = [
   "Medium",
   "Difficult",
   "Tricky",
-] as const;
+] ;
 
 export const difficultyToColor: Record<Difficulty, string> = {
   [difficultyArray[0]]: "#F9DF6D",

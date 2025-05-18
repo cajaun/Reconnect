@@ -13,8 +13,9 @@ export type Category = {
 };
 
 export type Puzzle = {
+  id: number; 
+  date: string; 
   categories: Category[];
-  name: string;
   words: Word[];
 };
 

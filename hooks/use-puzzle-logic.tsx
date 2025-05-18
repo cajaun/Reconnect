@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { shuffle as arrayShuffle, sleep} from "@/utils/puzzle-utils";
 import { Guess, Puzzle, Word } from "@/types/puzzle";
 import { Status } from "@/types/status";
@@ -20,9 +20,18 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
 
   const shuffle = useCallback(
     () =>
+      
       setShuffledWords(arrayShuffle(shuffledWords, correctGuesses.length * 4)),
     [shuffledWords, correctGuesses.length]
   );
+
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  useEffect(() => {
+    const shuffled = arrayShuffle([...initialShuffle], 0);
+    setShuffledWords(shuffled);
+    setHasInitialized(true);
+  }, [initialShuffle]);
 
   const deselect = useCallback(() => setSelectedWords([]), []);
 
@@ -68,6 +77,7 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
     reset,
     initialShuffle,
     categories: puzzle.categories,
-    name: puzzle.name,
+    id: puzzle.id,
+    hasInitialized,
   };
 };

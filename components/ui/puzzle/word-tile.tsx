@@ -1,15 +1,19 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Dimensions } from "react-native";
 import { usePuzzle } from "@/context/puzzle-context";
-import { useEffect, useMemo, useRef } from "react";
 import { Word } from "@/types/puzzle";
 import { difficultyToColor } from "@/types/difficulty";
 import useShuffleAnimation from "@/hooks/use-shuffle-animation";
 import { FadeIn } from "../utils/fade-in";
 import Animated, {
+  Easing,
   interpolate,
   SharedValue,
   useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
+
 
 type WordTileProps = {
   wordObject: Word;
@@ -28,7 +32,6 @@ const WordTile = ({ wordObject, disabled, progress }: WordTileProps) => {
   } = usePuzzle();
 
   const { difficulty, word } = wordObject;
-
   const location = shuffledWords.findIndex((w) => w.id === wordObject.id);
 
   const selected = sortedSelectedWords.some(
@@ -41,17 +44,50 @@ const WordTile = ({ wordObject, disabled, progress }: WordTileProps) => {
 
   const { row, animatedStyle } = useShuffleAnimation(location);
 
-  const rtextStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(progress.value, [0.6, 1], [0, 1]);
-    const scale = interpolate(progress.value, [0.6, 1], [0.75, 1]);
+  const flipState = useSharedValue(0);
 
+  const EasingsUtils = {
+    inOut: Easing.bezier(0.25, 0.1, 0.25, 1),
+  };
+  
+  useDerivedValue(() => {
+    flipState.value = withTiming(progress.value >= 0.6 ? 1 : 0, {
+      duration: 250,
+      easing: EasingsUtils.inOut,
+    });
+  }, [progress]);
+
+  const frontStyle = useAnimatedStyle(() => {
     return {
-      opacity,
-      transform: [{ scale }],
+      transform: [
+        {
+          rotateY: `${interpolate(flipState.value, [0, 1], [0, 180])}deg`,
+        },
+      ],
+      backfaceVisibility: "hidden",
+      position: "absolute",
+      height: "100%",
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "center",
     };
   });
 
-  // console.log(location, wordObject.word)
+  const backStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          rotateY: `${interpolate(flipState.value, [0, 1], [-180, 0])}deg`,
+        },
+      ],
+      backfaceVisibility: "hidden",
+      position: "absolute",
+      height: "100%",
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+    };
+  });
 
   if (correct) {
     if (location % 4 === 0) {
@@ -67,7 +103,7 @@ const WordTile = ({ wordObject, disabled, progress }: WordTileProps) => {
           style={{ top: `${row * 25}%` }}
         >
           <View
-            className="flex-col h-full w-full items-center justify-center rounded-md p-2 "
+            className="flex-col h-full w-full items-center justify-center rounded-md p-2"
             style={{ backgroundColor: color }}
           >
             <FadeIn>
@@ -86,29 +122,39 @@ const WordTile = ({ wordObject, disabled, progress }: WordTileProps) => {
   }
 
   return (
-    <Animated.View className="absolute h-1/4 w-1/4 p-1" style={animatedStyle}>
+    <Animated.View
+      className="absolute h-1/4 w-1/4 p-1"
+      style={[animatedStyle, { perspective: 1000 } as any]}
+    > 
       <Pressable
         disabled={disabled}
-        className={` h-full w-full rounded-lg font-bold transition-transform ease-in-out active:scale-90 ${
-          selected ? " bg-[#BFBFBF] " : " bg-[#F2F2F2] "
-        } ${selected && status === "pending" && `animate-bounce-up`} ${
-          selected && status === "failure" && `animate-shake`
+        className={`h-full w-full rounded-lg transition-transform ease-in-out active:scale-90 ${
+          selected ? "bg-[#BFBFBF]" : "bg-[#F2F2F2]"
+        } ${
+          selected && status === "pending" ? "animate-bounce-up" : ""
+        } ${
+          selected && status === "failure" ? "animate-shake" : ""
         }`}
         onPress={() => onWordClick(wordObject)}
+      
       >
-        <Text
-          className={`text-center text-xl uppercase font-semibold my-auto flex-row ${
-            selected ? "text-white" : "text-black"
-          }`}
-        >
-          {word.charAt(0)}
 
-          {disabled && progress.value >= 0.6 && (
-            <Animated.Text style={rtextStyle}>{word.slice(1)}</Animated.Text>
-          )}
+        <Animated.View style={frontStyle}>
+          <Text
+            className={`text-center text-xl uppercase font-semibold ${
+              selected ? "text-white" : "text-black"
+            }`}
+          >
+            {word.charAt(0)}
+          </Text>
+        </Animated.View>
 
-          {!disabled && word.slice(1)}
-        </Text>
+
+        <Animated.View style={backStyle}>
+          <Text className="text-center text-xl uppercase font-semibold text-black">
+            {word}
+          </Text>
+        </Animated.View>
       </Pressable>
     </Animated.View>
   );

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { View, Text, Dimensions, FlatList, Pressable } from "react-native";
 import Animated, {
@@ -11,19 +11,24 @@ import { allPuzzles } from "@/utils/puzzle-data";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SymbolView } from "expo-symbols";
 import { PressableScale } from "@/components/ui/utils/pressable-scale";
+import TouchableBounce from "@/components/ui/utils/touchable-bounce";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Puzzle = () => {
   const { id } = useLocalSearchParams();
+
   const router = useRouter();
   const { bottom, top } = useSafeAreaInsets();
 
   const puzzleId = id ? Number(id) : allPuzzles[0]?.id;
+  console.log(puzzleId)
 
   if (!puzzleId || !allPuzzles.length) {
     return <Text>Loading puzzles...</Text>;
   }
 
   const puzzle = allPuzzles.find((p) => p.id === puzzleId);
+  // console.log(puzzle)
 
   const progress = GameSheetMutableProgress;
 
@@ -37,38 +42,57 @@ const Puzzle = () => {
   const visibleItems = 4;
   const itemWidth = (width - gap * (visibleItems - 1) - 32) / visibleItems;
 
-  const renderItem = ({ item }: { item: { id: string } }) => (
-    <PressableScale
-      style={{
-        width: itemWidth,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      onPress={() => router.push(`/${item.id}`)}
-    >
-      <Text className="font-semibold text-[#666666]">Sat</Text>
-      <Text className="font-bold text-3xl">17</Text>
+  const [unlockedIds, setUnlockedIds] = useState<number[]>([]);
 
-      <View
+useEffect(() => {
+  const fetchUnlocked = async () => {
+    const stored = await AsyncStorage.getItem('unlockedPuzzles');
+    if (stored) {
+      setUnlockedIds(JSON.parse(stored));
+    }
+  };
+  fetchUnlocked();
+}, []);
+
+const unlockedPuzzles = allPuzzles
+  .filter(p => unlockedIds.includes(p.id))
+  .map(puzzle => ({
+    ...puzzle,
+    id: String(puzzle.id),
+  }));
+
+  const renderItem = ({ item }: { item: { id: string } }) => {
+    const isSelected = id === item.id;
+
+    return (
+      <TouchableBounce
         style={{
-          marginTop: 8,
-          backgroundColor: "#F2F2F2",
-          padding: 6,
-          borderRadius: 100,
+          width: itemWidth,
           alignItems: "center",
           justifyContent: "center",
         }}
+        onPress={() => router.push(`/${item.id}`)}
       >
-        <SymbolView name="circle.dotted" tintColor="black" size={20} />
-      </View>
-    </PressableScale>
-  );
+        <View className={isSelected ? "bg-[#F2F2F2] rounded-2xl py-4 px-6  justify-center items-center" : ""} >
+          <Text className="font-semibold text-[#666666]">Sat</Text>
+          <Text className="font-bold text-3xl">17</Text>
 
-  useEffect(() => {
-    if (!id) {
-      router.push(`/${allPuzzles[0]?.id}`);
-    }
-  }, [id, router]);
+          <View
+            style={{
+              marginTop: 8,
+              backgroundColor: "#F2F2F2",
+              padding: 6,
+              borderRadius: 100,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <SymbolView name={isSelected ? "checkmark.circle.fill" : "circle.dotted"} tintColor="black" size={20} />
+          </View>
+        </View>
+      </TouchableBounce>
+    );
+  };
 
   if (!puzzle) {
     return <Text>Puzzle not found</Text>;
@@ -154,10 +178,7 @@ const Puzzle = () => {
         ]}
       >
         <FlatList
-          data={allPuzzles.map((puzzle) => ({
-            ...puzzle,
-            id: String(puzzle.id),
-          }))}
+          data={unlockedPuzzles}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           horizontal

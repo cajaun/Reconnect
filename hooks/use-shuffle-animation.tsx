@@ -37,7 +37,7 @@ const useShuffleAnimation = (location: number) => {
 
   return {
     row,
-    animatedStyle,
+    animatedStyle, 
   };
 };
 

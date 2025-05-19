@@ -17,12 +17,27 @@ export const usePuzzleAnimations = ({
     marginTop: interpolate(progress.value, [0, 1], [BaseOffset, 48]),
   }));
 
-  const rKnobStyle = useAnimatedStyle(() => {
+  const rTopTextStyle = useAnimatedStyle(() => {
     const top = interpolate(progress.value, [0, 1], [-BaseOffset + 50, 40]);
     const translateY = interpolate(progress.value, [0, 1], [0, -25]);
+    const opacity = interpolate(progress.value, [0, 0.6], [1, 0]);
     return {
       top,
+      fontSize: interpolate(progress.value, [0, 1], [30, 3]),
+      marginTop: interpolate(progress.value, [0, 1], [0, -24]),
       transform: [{ translateY }],
+      alignSelf: "center",
+      opacity,
+    };
+  });
+
+  const rKnobStyle = useAnimatedStyle(() => {
+    const top = interpolate(progress.value, [0, 1], [-BaseOffset + 32, 40]);
+    const translateY = interpolate(progress.value, [0, 1], [0, -25]);
+    const scaleX = interpolate(progress.value, [0, 1], [0.05, 1]);
+    return {
+      top,
+      transform: [{ translateY }, {scaleX}],
       alignSelf: "center",
       opacity: interpolate(progress.value, [0.6, 0.75], [0, 1]),
     };
@@ -76,19 +91,7 @@ export const usePuzzleAnimations = ({
     top: interpolate(progress.value, [0, 0.95], [-BaseOffset + 120, safeTop - 4]),
   }));
 
-  const rTopTextStyle = useAnimatedStyle(() => {
-    const top = interpolate(progress.value, [0, 1], [-BaseOffset + 50, 40]);
-    const translateY = interpolate(progress.value, [0, 1], [0, -25]);
-    const opacity = interpolate(progress.value, [0, 0.6], [1, 0]);
-    return {
-      top,
-      fontSize: interpolate(progress.value, [0, 1], [30, 3]),
-      marginTop: interpolate(progress.value, [0, 1], [0, -24]),
-      transform: [{ translateY }],
-      alignSelf: "center",
-      opacity,
-    };
-  });
+
 
   const rControlsStyle = useAnimatedStyle(() => ({
     opacity: interpolate(progress.value, [0.6, 1], [0, 1]),

@@ -105,7 +105,7 @@ export const GameSheet = ({ puzzle }: GameSheetProps) => {
         [0, 0.9, 1],
         ["rgba(255, 255, 255, 0.1)", "rgba(255, 255, 255, 0.1)", "transparent"]
       ),
-      borderRadius: interpolate(progress.value, [0, 0.9, 1], [24, 48, 0]),
+      borderRadius: interpolate(progress.value, [0, 0.9, 1], [28, 48, 0]),
       borderWidth: interpolate(
         progress.value,
         [0, 0.9, 1],

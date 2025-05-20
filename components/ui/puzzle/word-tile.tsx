@@ -52,7 +52,6 @@ const WordTile = ({ wordObject, disabled, progress }: WordTileProps) => {
   
   useDerivedValue(() => {
     flipState.value = withTiming(progress.value >= 0.6 ? 1 : 0, {
-      duration: 250,
       easing: EasingsUtils.inOut,
     });
   }, [progress]);
@@ -141,9 +140,7 @@ const WordTile = ({ wordObject, disabled, progress }: WordTileProps) => {
 
         <Animated.View style={frontStyle}>
           <Text
-            className={`text-center text-xl uppercase font-semibold ${
-              selected ? "text-white" : "text-black"
-            }`}
+            className="text-center text-xl uppercase font-semibold text-black"
           >
             {word.charAt(0)}
           </Text>
@@ -151,7 +148,9 @@ const WordTile = ({ wordObject, disabled, progress }: WordTileProps) => {
 
 
         <Animated.View style={backStyle}>
-          <Text className="text-center text-xl uppercase font-semibold text-black">
+          <Text className={`text-center text-xl uppercase font-semibold ${
+              selected ? "text-white" : "text-black"
+            }`}>
             {word}
           </Text>
         </Animated.View>

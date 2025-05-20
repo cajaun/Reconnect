@@ -1,8 +1,13 @@
-import { interpolate, SharedValue, useAnimatedStyle } from "react-native-reanimated";
+import {
+  Extrapolation,
+  interpolate,
+  SharedValue,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import { interpolateColor } from "react-native-reanimated";
 
 type UsePuzzleAnimationsProps = {
-  progress: SharedValue<number>
+  progress: SharedValue<number>;
   BaseOffset: number;
   safeTop: number;
 };
@@ -12,7 +17,6 @@ export const usePuzzleAnimations = ({
   BaseOffset,
   safeTop,
 }: UsePuzzleAnimationsProps) => {
-  
   const rContainerStyle = useAnimatedStyle(() => ({
     marginTop: interpolate(progress.value, [0, 1], [BaseOffset, 48]),
   }));
@@ -32,14 +36,14 @@ export const usePuzzleAnimations = ({
   });
 
   const rKnobStyle = useAnimatedStyle(() => {
-    const top = interpolate(progress.value, [0, 1], [-BaseOffset + 32, 40]);
+    const top = interpolate(progress.value, [0, 1], [-BaseOffset + 29, 40]);
     const translateY = interpolate(progress.value, [0, 1], [0, -25]);
     const scaleX = interpolate(progress.value, [0, 1], [0.05, 1]);
     return {
       top,
-      transform: [{ translateY }, {scaleX}],
+      transform: [{ translateY }, { scaleX }],
       alignSelf: "center",
-      opacity: interpolate(progress.value, [0.6, 0.75], [0, 1]),
+      opacity: interpolate(progress.value, [0.6, 0.7], [0, 1]),
     };
   });
 
@@ -50,45 +54,60 @@ export const usePuzzleAnimations = ({
       [0, 0.95],
       [-BaseOffset + 90, safeTop - 17]
     );
-    const color = interpolateColor(progress.value, [0, 1], ["#BFBFBF", "#000000"]);
+    const color = interpolateColor(
+      progress.value,
+      [0, 0.6],
+      ["#BFBFBF", "#000000"]
+    );
 
     return {
       fontSize,
       top,
       alignSelf: "center",
-      opacity: interpolate(progress.value, [0, 0.95], [1, 1]),
       color,
     };
   });
 
+  const rMistakeStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: interpolate(progress.value, [0.75, 1], [0.95, 1]) }],
+    position: "absolute",
+    top: interpolate(
+      progress.value,
+      [0, 0.95],
+      [-BaseOffset + 110, safeTop - 4]
+    ),
+  }));
+
   const rLeftButtonStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0, 0.6], [0, 1]),
+    opacity: interpolate(progress.value, [0.6, 1], [0, 1]),
     transform: [
       { translateX: interpolate(progress.value, [0, 1], [-2, 0]) },
       { scale: interpolate(progress.value, [0.75, 1], [0.95, 1]) },
     ],
     position: "absolute",
-    top: interpolate(progress.value, [0, 0.95], [-BaseOffset + 90, safeTop - 20]),
+    top: interpolate(
+      progress.value,
+      [0, 0.95],
+      [-BaseOffset + 90, safeTop - 20]
+    ),
     left: 16,
     zIndex: 1002,
   }));
 
   const rRightButtonStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0, 0.6], [0, 1]),
+    opacity: interpolate(progress.value, [0.6, 1], [0, 1]),
     transform: [
       { translateX: interpolate(progress.value, [0, 1], [2, 0]) },
       { scale: interpolate(progress.value, [0.75, 1], [0.95, 1]) },
     ],
     position: "absolute",
-    top: interpolate(progress.value, [0, 0.95], [-BaseOffset + 90, safeTop - 20]),
+    top: interpolate(
+      progress.value,
+      [0, 0.95],
+      [-BaseOffset + 90, safeTop - 20]
+    ),
     right: 16,
     zIndex: 1002,
-  }));
-
-  const rMistakeStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: interpolate(progress.value, [0.75, 1], [0.95, 1]) }],
-    position: "absolute",
-    top: interpolate(progress.value, [0, 0.95], [-BaseOffset + 120, safeTop - 4]),
   }));
 
 
@@ -107,6 +126,14 @@ export const usePuzzleAnimations = ({
     bottom: interpolate(progress.value, [0, 1], [BaseOffset - 165, 0]),
   }));
 
+  const rPlayButtonStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateY: interpolate(progress.value, [0, 0.45], [0, -25], Extrapolation.CLAMP) },
+      { scale: interpolate(progress.value, [0, 0.45], [1, 0], Extrapolation.CLAMP) },
+    ],
+    opacity: interpolate(progress.value, [0, 0.45], [1, 0], Extrapolation.CLAMP),
+  }));
+ 
   return {
     rContainerStyle,
     rKnobStyle,
@@ -117,5 +144,6 @@ export const usePuzzleAnimations = ({
     rTopTextStyle,
     rControlsStyle,
     rBoardStyle,
+    rPlayButtonStyle,
   };
 };

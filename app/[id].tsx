@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { View, Text, Dimensions, FlatList, Pressable } from "react-native";
 import Animated, {
@@ -7,116 +6,62 @@ import Animated, {
 } from "react-native-reanimated";
 import { GameSheet } from "@/components/ui/game-sheet/game-sheet";
 import { GameSheetMutableProgress } from "@/components/ui/game-sheet/shared-progress";
-import { allPuzzles } from "@/utils/puzzle-data";
+import { allPuzzles } from "@/data/puzzle-data";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SymbolView } from "expo-symbols";
 import { PressableScale } from "@/components/ui/utils/pressable-scale";
-import TouchableBounce from "@/components/ui/utils/touchable-bounce";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import PuzzleDate from "@/components/ui/puzzle/puzzle-date";
+import { usePuzzleData } from "@/hooks/use-puzzle-data";
+import { getUnlockedDateInfo } from "@/utils/dates-manager";
+import { useEffect, useMemo, useRef } from "react";
+import { useLayoutAnimations } from "@/hooks/use-layout-animations";
 
 const Puzzle = () => {
   const { id } = useLocalSearchParams();
-
-  const router = useRouter();
-  const { bottom, top } = useSafeAreaInsets();
-
-  const puzzleId = id ? Number(id) : allPuzzles[0]?.id;
-  console.log(puzzleId)
-
-  if (!puzzleId || !allPuzzles.length) {
-    return <Text>Loading puzzles...</Text>;
-  }
-
-  const puzzle = allPuzzles.find((p) => p.id === puzzleId);
-  // console.log(puzzle)
-
   const progress = GameSheetMutableProgress;
-
-  const rScreenStyle = useAnimatedStyle(() => ({
-    borderRadius: interpolate(progress.value, [0, 1], [0, 48]),
-    borderCurve: "continuous",
-  }));
-
+  const { listAnimatedStyle, headerAnimatedStyle, rScreenStyle } =
+    useLayoutAnimations(progress);
+  const router = useRouter();
+  const { bottom } = useSafeAreaInsets();
+  const puzzleId = id ? Number(id) : allPuzzles[0]?.id;
+  const puzzle = allPuzzles.find((p) => p.id === puzzleId);
+  const { unlockedPuzzles, startDate } = usePuzzleData();
+  // console.log("Start Date:", startDate);
   const { width } = Dimensions.get("window");
   const gap = 8;
   const visibleItems = 4;
   const itemWidth = (width - gap * (visibleItems - 1) - 32) / visibleItems;
 
-  const [unlockedIds, setUnlockedIds] = useState<number[]>([]);
+  const { dayName, dayNumber, monthName } = getUnlockedDateInfo(
+    startDate,
+    puzzleId,
+    false
+  );
 
-useEffect(() => {
-  const fetchUnlocked = async () => {
-    const stored = await AsyncStorage.getItem('unlockedPuzzles');
-    if (stored) {
-      setUnlockedIds(JSON.parse(stored));
-    }
-  };
-  fetchUnlocked();
-}, []);
+  const formattedUnlockedPuzzles = useMemo(() => {
+    const unlockedSet = new Set(Object.keys(unlockedPuzzles).map(Number));
+    return allPuzzles
+      .filter((puzzle) => unlockedSet.has(puzzle.id))
+      .map((puzzle) => ({
+        ...puzzle,
+        id: String(puzzle.id),
+      }));
+  }, [unlockedPuzzles]);
 
-const unlockedPuzzles = allPuzzles
-  .filter(p => unlockedIds.includes(p.id))
-  .map(puzzle => ({
-    ...puzzle,
-    id: String(puzzle.id),
-  }));
+  const flatListRef = useRef<FlatList>(null);
 
-  const renderItem = ({ item }: { item: { id: string } }) => {
-    const isSelected = id === item.id;
-
-    return (
-      <TouchableBounce
-        style={{
-          width: itemWidth,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        onPress={() => router.push(`/${item.id}`)}
-      >
-        <View className={isSelected ? "bg-[#F2F2F2] rounded-2xl py-4 px-6  justify-center items-center" : ""} >
-          <Text className="font-semibold text-[#666666]">Sat</Text>
-          <Text className="font-bold text-3xl">17</Text>
-
-          <View
-            style={{
-              marginTop: 8,
-              backgroundColor: "#F2F2F2",
-              padding: 6,
-              borderRadius: 100,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <SymbolView name={isSelected ? "checkmark.circle.fill" : "circle.dotted"} tintColor="black" size={20} />
-          </View>
-        </View>
-      </TouchableBounce>
+  useEffect(() => {
+    const index = formattedUnlockedPuzzles.findIndex(
+      (puzzle) => puzzle.id === String(puzzleId)
     );
-  };
+    if (index !== -1) {
+      flatListRef.current?.scrollToIndex({ index, animated: true });
+    }
+  }, [puzzleId, formattedUnlockedPuzzles]);
 
   if (!puzzle) {
     return <Text>Puzzle not found</Text>;
   }
-
-  const listAnimatedStyle = useAnimatedStyle(() => {
-    const translateY = interpolate(progress.value, [0, 0.65], [0, 100]);
-    const opacity = interpolate(progress.value, [0, 0.5, 1], [1, 0.2, 0]);
-
-    return {
-      transform: [{ translateY }],
-      opacity,
-    };
-  });
-
-  const headerAnimatedStyle = useAnimatedStyle(() => {
-    const translateY = interpolate(progress.value, [0.75, 0], [0, 100]);
-    const opacity = interpolate(progress.value, [0, 0.5, 1], [1, 0.2, 0]);
-
-    return {
-      transform: [{ translateY }],
-      opacity,
-    };
-  });
 
   return (
     <View style={{ flex: 1 }}>
@@ -162,7 +107,12 @@ const unlockedPuzzles = allPuzzles
       <Animated.View
         style={[{ flex: 1, backgroundColor: "white" }, rScreenStyle]}
       >
-        <GameSheet puzzle={puzzle} />
+        <GameSheet
+          puzzle={puzzle}
+          dayName={dayName}
+          dayNumber={dayNumber}
+          monthName={monthName}
+        />
       </Animated.View>
 
       <Animated.View
@@ -178,13 +128,25 @@ const unlockedPuzzles = allPuzzles
         ]}
       >
         <FlatList
-          data={unlockedPuzzles}
-          renderItem={renderItem}
+          ref={flatListRef}
+          data={formattedUnlockedPuzzles}
+          renderItem={({ item }) => {
+            const isSelected = id === item.id;
+            return (
+              <PuzzleDate
+                id={item.id}
+                isSelected={isSelected}
+                startDate={startDate}
+                itemWidth={itemWidth}
+                onPress={() => router.push(`/${item.id}`)}
+              />
+            );
+          }}
           keyExtractor={(item) => item.id}
           horizontal
           showsHorizontalScrollIndicator={false}
           pagingEnabled={false}
-          snapToInterval={itemWidth + gap * 2}
+          snapToInterval={itemWidth + gap}
           decelerationRate="fast"
           snapToAlignment="center"
           contentContainerStyle={{
@@ -192,6 +154,11 @@ const unlockedPuzzles = allPuzzles
             paddingRight: 16,
           }}
           ItemSeparatorComponent={() => <View style={{ width: gap }} />}
+          getItemLayout={(data, index) => ({
+            length: itemWidth + gap,
+            offset: (itemWidth + gap) * index,
+            index,
+          })}
         />
       </Animated.View>
     </View>

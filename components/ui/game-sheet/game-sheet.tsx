@@ -7,7 +7,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import {  StyleSheet, useWindowDimensions, } from "react-native";
+import { StyleSheet, useWindowDimensions } from "react-native";
 
 import { GameSheetMutableProgress } from "./shared-progress";
 
@@ -17,13 +17,21 @@ import { MiniPlayerHeight } from "./constants";
 import { PuzzleContextProvider } from "@/context/puzzle-context";
 import { useMemo, useState } from "react";
 import { shuffle } from "@/utils/puzzle-utils";
-import { allPuzzles } from "@/utils/puzzle-data";
+import { allPuzzles } from "@/data/puzzle-data";
 
 type GameSheetProps = {
-  puzzle: (typeof allPuzzles)[number]; // or Puzzle if you defined a type
+  puzzle: (typeof allPuzzles)[number];
+  dayName: string;
+  dayNumber: number | null;
+  monthName: string;
 };
 
-export const GameSheet = ({ puzzle }: GameSheetProps) => {
+export const GameSheet = ({
+  puzzle,
+  dayName,
+  dayNumber,
+  monthName,
+}: GameSheetProps) => {
   const { height: windowHeight } = useWindowDimensions();
   const progress = GameSheetMutableProgress;
 
@@ -105,7 +113,7 @@ export const GameSheet = ({ puzzle }: GameSheetProps) => {
         [0, 0.9, 1],
         ["rgba(255, 255, 255, 0.1)", "rgba(255, 255, 255, 0.1)", "transparent"]
       ),
-      borderRadius: interpolate(progress.value, [0, 0.9, 1], [28, 48, 0]),
+      borderRadius: interpolate(progress.value, [0, 0.9, 1], [30, 48, 0]),
       borderWidth: interpolate(
         progress.value,
         [0, 0.9, 1],
@@ -150,11 +158,11 @@ export const GameSheet = ({ puzzle }: GameSheetProps) => {
         >
           <SheetContent
             key={puzzle.id}
-            puzzleId={puzzle.id}
             progress={progress}
-            title="Happiness does not wait"
-            subtitle="Ólafur Arnalds"
-            imageUrl="https://i3.ytimg.com/vi/BgO08T3E4LE/maxresdefault.jpg"
+            puzzleId={puzzle.id}
+            dayName={dayName}
+            dayNumber={dayNumber}
+            monthName={monthName}
           />
         </PuzzleContextProvider>
       </Animated.View>

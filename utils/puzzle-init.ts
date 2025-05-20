@@ -1,36 +1,94 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { allPuzzles } from './puzzle-data';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const FIRST_LAUNCH_KEY = 'hasLaunchedBefore';
-const UNLOCKED_PUZZLES_KEY = 'unlockedPuzzles';
+export const setStartDate = async (): Promise<void> => {
+  try {
+    const startDate = await AsyncStorage.getItem("startDate");
+    if (!startDate) {
 
-export async function initializePuzzlesOnFirstLaunch(): Promise<number[]> {
-  const hasLaunched = await AsyncStorage.getItem(FIRST_LAUNCH_KEY);
-  console.log('hasLaunched:', hasLaunched);
 
-  if (hasLaunched) {
-    const unlocked = await AsyncStorage.getItem(UNLOCKED_PUZZLES_KEY);
-    console.log('Previously unlocked:', unlocked);
-    return unlocked ? JSON.parse(unlocked) : [];
+      const today = new Date("2025-05-01T12:00:00Z");
+      // const today = new Date();
+
+      const localDateString =
+        today.getFullYear() +
+        "-" +
+        String(today.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(today.getDate()).padStart(2, "0");
+      await AsyncStorage.setItem("startDate", localDateString);
+    }
+  } catch (error) {
+    console.error("Error setting start date:", error);
   }
+};
 
-  let today = new Date(); // actual current date
+export const getDaysElapsed = async (): Promise<number> => {
+  try {
+    const startDate = await AsyncStorage.getItem("startDate");
+    if (!startDate) return 0;
 
-  // Override for testing/demo to June 15 of current year
-  today = new Date(today.getFullYear(), 5, 15); // month is zero-based: 5 = June
-  
-  const currentDay = today.getDate(); // This will be 15
+    const start = new Date(startDate + "T00:00:00Z");
+    const today = new Date();
 
-  console.log('Unlocking puzzles up to day:', currentDay);
+    today.setHours(0, 0, 0, 0);
 
-  const unlockedIds = allPuzzles
-    .slice(0, currentDay)
-    .map(p => p.id);
+    const differenceInTime = today.getTime() - start.getTime();
+    return Math.floor(differenceInTime / (1000 * 3600 * 24));
+  } catch (error) {
+    console.error("Error calculating days elapsed:", error);
+    return 0;
+  }
+};
 
-  console.log(`Unlocked puzzle IDs as of ${today.toDateString()}:`, unlockedIds);
+export const unlockPuzzles = async (): Promise<void> => {
+  try {
+    const daysElapsed = await getDaysElapsed();
+    const unlockedPuzzles: { [key: number]: boolean } = {};
 
-  await AsyncStorage.setItem(FIRST_LAUNCH_KEY, 'true');
-  await AsyncStorage.setItem(UNLOCKED_PUZZLES_KEY, JSON.stringify(unlockedIds));
+    for (let i = 1; i <= daysElapsed + 1; i++) {
+      unlockedPuzzles[i] = true;
+    }
 
-  return unlockedIds;
-}
+    await AsyncStorage.setItem(
+      "unlockedPuzzles",
+      JSON.stringify(unlockedPuzzles)
+    );
+  } catch (error) {
+    console.error("Error unlocking puzzles:", error);
+  }
+};
+
+export const isPuzzleUnlocked = async (puzzleId: number): Promise<boolean> => {
+  try {
+    const unlockedPuzzles = JSON.parse(
+      (await AsyncStorage.getItem("unlockedPuzzles")) || "{}"
+    );
+    return !!unlockedPuzzles[puzzleId];
+  } catch (error) {
+    console.error("Error checking puzzle unlock state:", error);
+    return false;
+  }
+};
+
+export const getUnlockedPuzzles = async (): Promise<{
+  [key: number]: boolean;
+}> => {
+  try {
+    const unlockedPuzzles = JSON.parse(
+      (await AsyncStorage.getItem("unlockedPuzzles")) || "{}"
+    );
+    return unlockedPuzzles;
+  } catch (error) {
+    console.error("Error fetching unlocked puzzles:", error);
+    return {};
+  }
+};
+
+export const getStartDate = async (): Promise<string | null> => {
+  try {
+    const date = await AsyncStorage.getItem("startDate");
+    return date;
+  } catch {
+    return null;
+  }
+};

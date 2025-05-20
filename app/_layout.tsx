@@ -5,10 +5,10 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { Toaster } from 'sonner-native';
 import { useEffect, useState } from "react";
-import { allPuzzles } from "@/utils/puzzle-data";
-import { initializePuzzlesOnFirstLaunch } from "@/utils/puzzle-init";
+import { useColorScheme, View } from "react-native";
+import ThemeProvider from "@/components/ui/utils/theme-provider";
+import { getDaysElapsed, setStartDate } from "@/utils/puzzle-init";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View } from "react-native";
 
 
 
@@ -16,38 +16,35 @@ import { View } from "react-native";
 export default function RootLayout() {
 
   const [ready, setReady] = useState(false);
-
+  const colorScheme = useColorScheme();
 
 
   useEffect(() => {
-    (async () => {
-      // await AsyncStorage.clear();
-      // console.log('AsyncStorage cleared');
-      console.log('Calling initializePuzzlesOnFirstLaunch');
-      const unlockedIds = await initializePuzzlesOnFirstLaunch();
-      console.log('Unlocked IDs:', unlockedIds);
-      const today = new Date();
-      const todayIndex = today.getDate() - 1; // zero-based index for today
-      const todayPuzzle = allPuzzles[todayIndex];
-      const todayId = todayPuzzle?.id;
-  
-      let targetId = todayId && unlockedIds.includes(todayId)
-        ? todayId
-        : unlockedIds[0];
-  
-      console.log("Target Id", targetId);
-      if (targetId !== undefined) {
-        router.replace(`/${targetId}`);
-      }
-  
+    const init = async () => {
+      await AsyncStorage.clear();
+      await setStartDate(); 
+
+      const daysElapsed = await getDaysElapsed();
+      console.log("StartDate:", await AsyncStorage.getItem("startDate"));
+      console.log("Days elapsed:", daysElapsed);
+      
+      const puzzleIdForToday = daysElapsed + 1;
+      console.log("Puzzle ID for today:", puzzleIdForToday);
+
+
+      router.replace(`/${puzzleIdForToday}`);
+
       setReady(true);
-    })();
+    };
+
+    init();
   }, []);
-  
+
+
 
 
   return (
-    
+    <ThemeProvider>
     <GestureHandlerRootView>
       <StatusBar style="auto" />
       
@@ -59,5 +56,6 @@ export default function RootLayout() {
       </Stack>
       <Toaster />
     </GestureHandlerRootView>
+    </ThemeProvider>
   );
 }

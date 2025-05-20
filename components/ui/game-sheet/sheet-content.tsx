@@ -1,6 +1,4 @@
-import {
-  View,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
 import Animated, {
   useDerivedValue,
@@ -10,7 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { MiniPlayerHeight } from "./constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {  useState } from "react";
+import { useState } from "react";
 
 import PuzzleBoard from "../puzzle/puzzle-board";
 import { SymbolView } from "expo-symbols";
@@ -21,19 +19,20 @@ import { usePuzzleAnimations } from "@/hooks/use-puzzle-animations";
 
 type SheetContentProps = {
   progress: SharedValue<number>;
-  title: string;
-  subtitle: string;
-  imageUrl: string;
   puzzleId: number;
+  dayName: string;                   
+  dayNumber: number | null;  
+  monthName: string; 
 };
 
 const BaseOffset = (MiniPlayerHeight - 44) / 2;
 
 export const SheetContent = ({
   progress,
-  title,
-  subtitle,
   puzzleId,
+  dayName,
+  dayNumber,
+  monthName,
 }: SheetContentProps) => {
   const [isInteractive, setIsInteractive] = useState(false);
 
@@ -43,7 +42,7 @@ export const SheetContent = ({
     return active;
   });
 
-  const { top: safeTop } = useSafeAreaInsets();
+  const { top: safeTop, } = useSafeAreaInsets();
 
   const EasingsUtils = {
     inOut: Easing.bezier(0.25, 0.1, 0.25, 1),
@@ -59,6 +58,7 @@ export const SheetContent = ({
     rTopTextStyle,
     rControlsStyle,
     rBoardStyle,
+    rPlayButtonStyle,
   } = usePuzzleAnimations({ progress, BaseOffset, safeTop });
 
   return (
@@ -105,7 +105,7 @@ export const SheetContent = ({
           },
         ]}
       >
-        Thursday
+        {dayName}
       </Animated.Text>
 
       <Animated.Text
@@ -120,7 +120,7 @@ export const SheetContent = ({
           },
         ]}
       >
-        May 15
+       {monthName} {dayNumber}
       </Animated.Text>
 
       <Animated.View
@@ -159,7 +159,7 @@ export const SheetContent = ({
 
       <Animated.View style={[rRightButtonStyle]}>
         <PressableScale
-          onPress={() => console.log("Left button is being pressed")}
+          onPress={() => console.log("Right button is being pressed")}
           className="w-16 h-16 rounded-full items-center bg-[#F2F2F2] justify-center"
         >
           <SymbolView
@@ -178,6 +178,7 @@ export const SheetContent = ({
             flex: 1,
             alignItems: "center",
             justifyContent: "center",
+            position: "relative",
           },
         ]}
       >
@@ -186,6 +187,26 @@ export const SheetContent = ({
           interactive={isInteractive}
           progress={progress}
         />
+
+        {!isInteractive && (
+          <Animated.View
+            style={[
+              rPlayButtonStyle,
+              {
+                ...StyleSheet.absoluteFillObject,
+                zIndex: 10,
+                alignItems: "center",
+                justifyContent: "center",
+               
+              },
+            ]}
+          >
+            <PressableScale className="px-9 py-5 rounded-full bg-white flex-row gap-x-4 items-center" style={{}}>
+              <SymbolView name="play.fill" tintColor={"black"} size={25} weight="bold"  />
+              <Text className="text-black font-bold text-3xl">Play</Text>
+            </PressableScale>
+          </Animated.View>
+        )}
       </Animated.View>
 
       <Animated.View

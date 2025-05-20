@@ -101,8 +101,8 @@ export const GameSheet = ({
       height: sheetHeight,
       position: "absolute",
       top: (windowHeight - sheetHeight) / 2,
-      left: interpolate(progress.value, [0, 1], [16, 0]),
-      right: interpolate(progress.value, [0, 1], [16, 0]),
+      left: interpolate(progress.value, [0, 1], [20, 0]),
+      right: interpolate(progress.value, [0, 1], [20, 0]),
       backgroundColor: interpolateColor(
         progress.value,
         [0, 1],

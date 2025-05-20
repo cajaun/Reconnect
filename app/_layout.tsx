@@ -21,7 +21,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     const init = async () => {
-      await AsyncStorage.clear();
+      // await AsyncStorage.clear();
       await setStartDate(); 
 
       const daysElapsed = await getDaysElapsed();

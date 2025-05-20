@@ -26,7 +26,7 @@ const PuzzleControls = () => {
         </PressableScale>
 
         <PressableScale onPress={deselect} className="rounded-full w-16 h-16 items-center bg-[#F2F2F2]  justify-center">
-          <SymbolView name="eraser.line.dashed.fill" size={25} tintColor={"black"} weight="bold"  />
+          <SymbolView name="eraser.fill" size={25} tintColor={"black"} weight="bold"  />
         </PressableScale>
       </View>
 

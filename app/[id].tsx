@@ -1,8 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { View, Text, Dimensions, FlatList, Pressable } from "react-native";
 import Animated, {
-  interpolate,
-  useAnimatedStyle,
 } from "react-native-reanimated";
 import { GameSheet } from "@/components/ui/game-sheet/game-sheet";
 import { GameSheetMutableProgress } from "@/components/ui/game-sheet/shared-progress";
@@ -16,7 +14,7 @@ import { getUnlockedDateInfo } from "@/utils/dates-manager";
 import { useEffect, useMemo, useRef } from "react";
 import { useLayoutAnimations } from "@/hooks/use-layout-animations";
 
-const Puzzle = () => {
+const PuzzleScreen = () => {
   const { id } = useLocalSearchParams();
   const progress = GameSheetMutableProgress;
   const { listAnimatedStyle, headerAnimatedStyle, rScreenStyle } =
@@ -26,12 +24,11 @@ const Puzzle = () => {
   const puzzleId = id ? Number(id) : allPuzzles[0]?.id;
   const puzzle = allPuzzles.find((p) => p.id === puzzleId);
   const { unlockedPuzzles, startDate } = usePuzzleData();
-  // console.log("Start Date:", startDate);
   const { width } = Dimensions.get("window");
   const gap = 8;
   const visibleItems = 4;
   const itemWidth = (width - gap * (visibleItems - 1) - 32) / visibleItems;
-
+  const flatListRef = useRef<FlatList>(null);
   const { dayName, dayNumber, monthName } = getUnlockedDateInfo(
     startDate,
     puzzleId,
@@ -48,7 +45,7 @@ const Puzzle = () => {
       }));
   }, [unlockedPuzzles]);
 
-  const flatListRef = useRef<FlatList>(null);
+
 
   useEffect(() => {
     const index = formattedUnlockedPuzzles.findIndex(
@@ -64,11 +61,11 @@ const Puzzle = () => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1}}>
       <Animated.View
         style={[
           {
-            paddingHorizontal: 16,
+            paddingHorizontal: 24,
             position: "absolute",
             top: -20,
             left: 0,
@@ -105,7 +102,7 @@ const Puzzle = () => {
       </Animated.View>
 
       <Animated.View
-        style={[{ flex: 1, backgroundColor: "white" }, rScreenStyle]}
+        style={[{ flex: 1, backgroundColor: "white"}, rScreenStyle]}
       >
         <GameSheet
           puzzle={puzzle}
@@ -165,4 +162,4 @@ const Puzzle = () => {
   );
 };
 
-export default Puzzle;
+export default PuzzleScreen;

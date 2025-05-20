@@ -11,9 +11,9 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
   const [selectedWords, setSelectedWords] = useState<Word[]>([]);
   const [status, setStatus] = useState<Status>("guessing");
   const [guesses, setGuesses] = useState<Guess[]>([]);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const sortedSelectedWords = useMemo(() => sortSelectedWords(selectedWords, shuffledWords), [shuffledWords, selectedWords]);
-
 
   const correctGuesses = useMemo(() => getCorrectGuesses(guesses), [guesses]);
 
@@ -25,7 +25,6 @@ export const usePuzzleLogic = (puzzle: Puzzle, initialShuffle: Word[]) => {
     [shuffledWords, correctGuesses.length]
   );
 
-  const [hasInitialized, setHasInitialized] = useState(false);
 
   useEffect(() => {
     const shuffled = arrayShuffle([...initialShuffle], 0);

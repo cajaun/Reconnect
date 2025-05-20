@@ -12,10 +12,9 @@ const PuzzleBoard = ({
 }) => {
   const { shuffledWords, id, hasInitialized } = usePuzzle();
 
-
-
-  
   if (!hasInitialized) return null; 
+
+  // console.log(shuffledWords)
 
   return (
     <View key={`puzzle-${id}`} className="relative w-full px-1 ">

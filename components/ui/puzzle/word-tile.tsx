@@ -122,40 +122,43 @@ const WordTile = ({ wordObject, disabled, progress }: WordTileProps) => {
 
   return (
     <Animated.View
-      className="absolute h-1/4 w-1/4 p-1"
-      style={[animatedStyle, { perspective: 1000 } as any]}
-    > 
+    className="absolute h-1/4 w-1/4 "
+    style={[animatedStyle, { perspective: 1000 } as any]}
+  >
+
+    <Animated.View style={[frontStyle, { padding: 4 }]}>
+      <Pressable
+        disabled={disabled}
+        className={`h-full w-full rounded-lg transition-transform ease-in-out active:scale-90  bg-[#F2F2F2]`}
+      >
+        <Text className="text-center text-xl uppercase font-semibold text-black my-auto">
+          {word.charAt(0)}
+        </Text>
+      </Pressable>
+    </Animated.View>
+
+    <Animated.View style={[backStyle, { padding: 4 }]}>
       <Pressable
         disabled={disabled}
         className={`h-full w-full rounded-lg transition-transform ease-in-out active:scale-90 ${
           selected ? "bg-[#BFBFBF]" : "bg-[#F2F2F2]"
-        } ${
-          selected && status === "pending" ? "animate-bounce-up" : ""
-        } ${
+        } ${selected && status === "pending" ? "animate-bounce-up" : ""} ${
           selected && status === "failure" ? "animate-shake" : ""
         }`}
         onPress={() => onWordClick(wordObject)}
-      
       >
-
-        <Animated.View style={frontStyle}>
-          <Text
-            className="text-center text-xl uppercase font-semibold text-black"
-          >
-            {word.charAt(0)}
-          </Text>
-        </Animated.View>
-
-
-        <Animated.View style={backStyle}>
-          <Text className={`text-center text-xl uppercase font-semibold ${
-              selected ? "text-white" : "text-black"
-            }`}>
-            {word}
-          </Text>
-        </Animated.View>
+        <Text
+          className={`text-center text-xl uppercase font-semibold  my-auto ${
+            selected ? "text-white" : "text-black"
+          }`}
+        >
+          {word}
+        </Text>
       </Pressable>
     </Animated.View>
+
+
+  </Animated.View>
   );
 };
 

@@ -14,9 +14,6 @@ import { GameSheetMutableProgress } from "./shared-progress";
 import { SheetContent } from "./sheet-content";
 import { MiniPlayerHeight } from "./constants";
 
-import { PuzzleContextProvider } from "@/context/puzzle-context";
-import { useMemo, useState } from "react";
-import { shuffle } from "@/utils/puzzle-utils";
 import { allPuzzles } from "@/data/puzzle-data";
 
 type GameSheetProps = {
@@ -130,9 +127,6 @@ export const GameSheet = ({
     };
   });
 
-  const currentPuzzle = puzzle;
-  const shuffledWords = useMemo(() => shuffle(puzzle.words), [puzzle.words]);
-
   const gestures = Gesture.Simultaneous(tapGesture, panGesture);
 
   return (
@@ -151,20 +145,14 @@ export const GameSheet = ({
           },
         ]}
       >
-        <PuzzleContextProvider
+        <SheetContent
           key={puzzle.id}
-          puzzle={currentPuzzle}
-          initialShuffle={shuffledWords}
-        >
-          <SheetContent
-            key={puzzle.id}
-            progress={progress}
-            puzzleId={puzzle.id}
-            dayName={dayName}
-            dayNumber={dayNumber}
-            monthName={monthName}
-          />
-        </PuzzleContextProvider>
+          progress={progress}
+          puzzleId={puzzle.id}
+          dayName={dayName}
+          dayNumber={dayNumber}
+          monthName={monthName}
+        />
       </Animated.View>
     </GestureDetector>
   );

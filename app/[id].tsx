@@ -1,7 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { View, Text, Dimensions, FlatList, Pressable } from "react-native";
-import Animated, {
-} from "react-native-reanimated";
+import { View, Text, Dimensions, FlatList, Pressable, InteractionManager } from "react-native";
+import Animated from "react-native-reanimated";
 import { GameSheet } from "@/components/ui/game-sheet/game-sheet";
 import { GameSheetMutableProgress } from "@/components/ui/game-sheet/shared-progress";
 import { allPuzzles } from "@/data/puzzle-data";
@@ -13,6 +12,9 @@ import { usePuzzleData } from "@/hooks/use-puzzle-data";
 import { getUnlockedDateInfo } from "@/utils/dates-manager";
 import { useEffect, useMemo, useRef } from "react";
 import { useLayoutAnimations } from "@/hooks/use-layout-animations";
+import { PuzzleContextProvider } from "@/context/puzzle-context";
+import { shuffle } from "@/utils/puzzle-utils";
+import { useFormattedUnlockedPuzzles } from "@/hooks/use-formatted-unlocked-puzzles";
 
 const PuzzleScreen = () => {
   const { id } = useLocalSearchParams();
@@ -22,46 +24,40 @@ const PuzzleScreen = () => {
   const router = useRouter();
   const { bottom } = useSafeAreaInsets();
   const puzzleId = id ? Number(id) : allPuzzles[0]?.id;
-  const puzzle = allPuzzles.find((p) => p.id === puzzleId);
+  const puzzle = useMemo(
+    () => allPuzzles.find((p) => p.id === puzzleId),
+    [puzzleId]
+  );
   const { unlockedPuzzles, startDate } = usePuzzleData();
   const { width } = Dimensions.get("window");
   const gap = 8;
   const visibleItems = 4;
   const itemWidth = (width - gap * (visibleItems - 1) - 32) / visibleItems;
   const flatListRef = useRef<FlatList>(null);
-  const { dayName, dayNumber, monthName } = getUnlockedDateInfo(
-    startDate,
-    puzzleId,
-    false
+  const { dayName, dayNumber, monthName } = useMemo(
+    () => getUnlockedDateInfo(startDate, puzzleId, false),
+    [startDate, puzzleId]
   );
-
-  const formattedUnlockedPuzzles = useMemo(() => {
-    const unlockedSet = new Set(Object.keys(unlockedPuzzles).map(Number));
-    return allPuzzles
-      .filter((puzzle) => unlockedSet.has(puzzle.id))
-      .map((puzzle) => ({
-        ...puzzle,
-        id: String(puzzle.id),
-      }));
-  }, [unlockedPuzzles]);
-
-
-
-  useEffect(() => {
-    const index = formattedUnlockedPuzzles.findIndex(
-      (puzzle) => puzzle.id === String(puzzleId)
-    );
-    if (index !== -1) {
-      flatListRef.current?.scrollToIndex({ index, animated: true });
-    }
-  }, [puzzleId, formattedUnlockedPuzzles]);
 
   if (!puzzle) {
     return <Text>Puzzle not found</Text>;
   }
 
+  const shuffledWords = useMemo(() => shuffle(puzzle.words), [puzzle.words]);
+
+  const formattedUnlockedPuzzles = useFormattedUnlockedPuzzles(unlockedPuzzles);
+
+  useEffect(() => {
+    const index = formattedUnlockedPuzzles.findIndex((p) => p.id === String(puzzleId));
+    if (index !== -1) {
+      InteractionManager.runAfterInteractions(() => {
+        flatListRef.current?.scrollToIndex({ index, animated: true });
+      });
+    }
+  }, [puzzleId, formattedUnlockedPuzzles]);
+
   return (
-    <View style={{ flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Animated.View
         style={[
           {
@@ -102,14 +98,16 @@ const PuzzleScreen = () => {
       </Animated.View>
 
       <Animated.View
-        style={[{ flex: 1, backgroundColor: "white"}, rScreenStyle]}
+        style={[{ flex: 1, backgroundColor: "white" }, rScreenStyle]}
       >
-        <GameSheet
-          puzzle={puzzle}
-          dayName={dayName}
-          dayNumber={dayNumber}
-          monthName={monthName}
-        />
+        <PuzzleContextProvider puzzle={puzzle} initialShuffle={shuffledWords}>
+          <GameSheet
+            puzzle={puzzle}
+            dayName={dayName}
+            dayNumber={dayNumber}
+            monthName={monthName}
+          />
+        </PuzzleContextProvider>
       </Animated.View>
 
       <Animated.View

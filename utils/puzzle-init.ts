@@ -6,7 +6,7 @@ export const setStartDate = async (): Promise<void> => {
     if (!startDate) {
 
 
-      const today = new Date("2025-05-012T12:00:00Z");
+      const today = new Date("2025-05-015T12:00:00Z");
       // const today = new Date();
 
       const localDateString =

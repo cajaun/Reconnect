@@ -183,7 +183,7 @@ export const SheetContent = ({
         ]}
       >
         <PuzzleBoard
-          key={puzzleId}
+       
           interactive={isInteractive}
           progress={progress}
         />
@@ -207,6 +207,7 @@ export const SheetContent = ({
             </PressableScale>
           </Animated.View>
         )}
+        
       </Animated.View>
 
       <Animated.View

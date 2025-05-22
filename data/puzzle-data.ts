@@ -1,4 +1,14 @@
-export const allPuzzles = [
+function deepFreeze<T>(obj: T): T {
+  Object.getOwnPropertyNames(obj).forEach((prop) => {
+    const value = (obj as any)[prop];
+    if (value && typeof value === "object") {
+      deepFreeze(value);
+    }
+  });
+  return Object.freeze(obj);
+}
+
+ const rawPuzzles = [
   {
     "id": 1,
     "date": "2023-06-12",
@@ -84720,3 +84730,5 @@ export const allPuzzles = [
     ]
   }
 ];
+
+export const allPuzzles: Readonly<typeof rawPuzzles> = deepFreeze([...rawPuzzles]);

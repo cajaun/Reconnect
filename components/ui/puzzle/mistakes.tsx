@@ -20,17 +20,17 @@ const MistakesTracker = () => {
                 weight="bold"
                 size={20}
                 tintColor={isMistake ? "black" : "#DFDFDF"}
-                animationSpec={
-                  isMistake
-                    ? {
-                        effect: {
-                          type: "bounce",
-                          wholeSymbol: true,
-                        },
-                        speed: 1,
-                      }
-                    : undefined
-                }
+                // animationSpec={
+                //   isMistake
+                //     ? {
+                //         effect: {
+                //           type: "bounce",
+                //           wholeSymbol: true,
+                //         },
+                //         speed: 1,
+                //       }
+                //     : undefined
+                // }
               />
             </View>
           );

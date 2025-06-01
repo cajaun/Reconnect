@@ -14,22 +14,23 @@ const PuzzleBoard = ({
   interactive?: boolean;
   progress: SharedValue<number>;
 }) => {
-
-  
   const { shuffledWords, id, hasInitialized, correctGuesses, categories } =
     usePuzzle();
 
-    const { solvedGroups, adjustedWordPositions } = useMemo(() =>
-      getPuzzleWordLayout(shuffledWords, correctGuesses), [shuffledWords, correctGuesses]
-    );
+  const { solvedGroups, adjustedWordPositions } = useMemo(
+    () => getPuzzleWordLayout(shuffledWords, correctGuesses),
+    [shuffledWords, correctGuesses]
+  );
 
   if (!hasInitialized) return null;
 
-//   console.log("shuffledWords", shuffledWords.map(w => w.word));
-// console.log("solvedWordIds", solvedWordIds);
+  //   console.log("shuffledWords", shuffledWords.map(w => w.word));
+  // console.log("solvedWordIds", solvedWordIds);
+
+  
 
   return (
-    <View key={`puzzle-${id}`} className="relative w-full px-1">
+    <View className="relative w-full px-1">
       <View className="flex-col">
         <View className="relative flex w-full aspect-square flex-wrap gap-1">
           {solvedGroups.map(({ correct, difficulty, row }) => {

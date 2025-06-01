@@ -6,10 +6,12 @@ import Animated, {
   Easing,
   interpolate,
   SharedValue,
+  useAnimatedReaction,
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
+import React from "react";
 
 type WordTileProps = {
   wordObject: Word;
@@ -47,9 +49,19 @@ const WordTile = ({
     inOut: Easing.bezier(0.25, 0.1, 0.25, 1),
   };
 
-  useDerivedValue(() => {
-    flipState.value = progress.value >= 0.6 ? 1 : 0;
-  }, [progress]);
+  useAnimatedReaction(
+    () => progress.value >= 0.6,
+    (shouldFlip, prevShouldFlip) => {
+      if (shouldFlip !== prevShouldFlip) {
+        flipState.value = withTiming(shouldFlip ? 1 : 0, {
+          duration: 300,
+          easing: EasingsUtils.inOut,
+        });
+      }
+    },
+    []
+  );
+  
 
   const frontStyle = useAnimatedStyle(() => {
     return {
@@ -122,4 +134,4 @@ const WordTile = ({
   );
 };
 
-export default WordTile;
+export default React.memo(WordTile);

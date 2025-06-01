@@ -51,6 +51,7 @@ export const getPuzzleWordLayout = (
   shuffledWords: Word[],
   correctGuesses: Guess[]
 ) => {
+  
   const solvedGroups = correctGuesses
     .filter((group) => group.correct)
     .map((group, index) => {

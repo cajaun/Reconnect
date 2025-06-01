@@ -6,26 +6,23 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated";
-import { MiniPlayerHeight } from "./constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useState } from "react";
-
+import React, { useState } from "react";
 import PuzzleBoard from "../puzzle/puzzle-board";
 import { SymbolView } from "expo-symbols";
 import { PressableScale } from "../utils/pressable-scale";
 import MistakesTracker from "../puzzle/mistakes";
 import PuzzleControls from "../puzzle/puzzle-controls";
 import { usePuzzleAnimations } from "@/hooks/use-puzzle-animations";
+import { BaseOffset } from "./constants";
 
 type SheetContentProps = {
   progress: SharedValue<number>;
   puzzleId: number;
-  dayName: string;                   
-  dayNumber: number | null;  
-  monthName: string; 
+  dayName: string;
+  dayNumber: number | null;
+  monthName: string;
 };
-
-const BaseOffset = (MiniPlayerHeight - 44) / 2;
 
 export const SheetContent = ({
   progress,
@@ -36,13 +33,25 @@ export const SheetContent = ({
 }: SheetContentProps) => {
   const [isInteractive, setIsInteractive] = useState(false);
 
+  // const { openTray, closeTray } = useActionTray();
+
+  // const contentMap = React.useMemo(() => {
+  //   let map: Record<number, React.ReactNode> = {};
+  //   map = getContentMap(
+  //     (step) => openTray(step, map),
+  //     closeTray,
+  //     map
+  //   );
+  //   return map;
+  // }, [openTray, closeTray]);
+
   useDerivedValue(() => {
     const active = progress.value > 0.95;
     runOnJS(setIsInteractive)(active);
     return active;
   });
 
-  const { top: safeTop, } = useSafeAreaInsets();
+  const { top: safeTop } = useSafeAreaInsets();
 
   const EasingsUtils = {
     inOut: Easing.bezier(0.25, 0.1, 0.25, 1),
@@ -120,7 +129,7 @@ export const SheetContent = ({
           },
         ]}
       >
-       {monthName} {dayNumber}
+        {monthName} {dayNumber}
       </Animated.Text>
 
       <Animated.View
@@ -158,10 +167,7 @@ export const SheetContent = ({
       </Animated.View>
 
       <Animated.View style={[rRightButtonStyle]}>
-        <PressableScale
-          onPress={() => console.log("Right button is being pressed")}
-          className="w-16 h-16 rounded-full items-center bg-[#F2F2F2] justify-center"
-        >
+        <PressableScale className="w-16 h-16 rounded-full items-center bg-[#F2F2F2] justify-center">
           <SymbolView
             name="gearshape.fill"
             tintColor={"black"}
@@ -183,7 +189,7 @@ export const SheetContent = ({
         ]}
       >
         <PuzzleBoard
-       
+          key={puzzleId}
           interactive={isInteractive}
           progress={progress}
         />
@@ -197,17 +203,23 @@ export const SheetContent = ({
                 zIndex: 10,
                 alignItems: "center",
                 justifyContent: "center",
-               
               },
             ]}
           >
-            <PressableScale className="px-9 py-5 rounded-full bg-white flex-row gap-x-4 items-center" style={{}}>
-              <SymbolView name="play.fill" tintColor={"black"} size={25} weight="bold"  />
+            <PressableScale
+              className="px-9 py-5 rounded-full bg-white flex-row gap-x-4 items-center"
+              style={{}}
+            >
+              <SymbolView
+                name="play.fill"
+                tintColor={"black"}
+                size={25}
+                weight="bold"
+              />
               <Text className="text-black font-bold text-3xl">Play</Text>
             </PressableScale>
           </Animated.View>
         )}
-        
       </Animated.View>
 
       <Animated.View

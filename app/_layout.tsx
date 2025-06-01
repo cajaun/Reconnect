@@ -7,43 +7,50 @@ import { Toaster } from "sonner-native";
 import { useEffect, useState } from "react";
 import { useColorScheme, View } from "react-native";
 import ThemeProvider from "@/components/ui/utils/theme-provider";
-import { getDaysElapsed, setStartDate } from "@/utils/puzzle-init";
+import { getDaysElapsed, setStartDate, unlockPuzzles } from "@/storage/puzzle-init";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ActionTrayProvider } from "@/context/action-tray-context";
+import { clearPuzzleCacheAndStorage } from "@/storage/puzzle-data";
+import { markStart, setupPerformanceObserver } from "@/utils/performance";
+
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
   const colorScheme = useColorScheme();
 
+
   useEffect(() => {
+
     const init = async () => {
-      // await AsyncStorage.clear();
       await setStartDate();
+      await unlockPuzzles();
 
       const daysElapsed = await getDaysElapsed();
-      console.log("StartDate:", await AsyncStorage.getItem("startDate"));
-      console.log("Days elapsed:", daysElapsed);
-
       const puzzleIdForToday = daysElapsed + 1;
-      console.log("Puzzle ID for today:", puzzleIdForToday);
+
 
       router.replace(`/${puzzleIdForToday}`);
-
       setReady(true);
     };
 
     init();
   }, []);
+  
 
   return (
     <ThemeProvider>
-      <GestureHandlerRootView>
-        <StatusBar style="auto" />
 
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="[id]" />
-        </Stack>
-        <Toaster />
+      <GestureHandlerRootView>
+        <ActionTrayProvider>
+          <StatusBar style="auto" />
+
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="[id]" />
+          </Stack>
+          <Toaster />
+        </ActionTrayProvider>
       </GestureHandlerRootView>
+ 
     </ThemeProvider>
   );
 }

@@ -1,8 +1,13 @@
-import React from "react";
-import { View, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, Pressable } from "react-native";
 import { SymbolView } from "expo-symbols";
 import TouchableBounce from "@/components/ui/utils/touchable-bounce";
-import { calculateUnlockDate, getUnlockedDateInfo } from "@/utils/dates-manager";
+import {
+  getUnlockedDateInfo,
+} from "@/utils/dates-manager";
+import { usePuzzleCountdown } from "@/hooks/use-puzzle-countdown";
+import { usePuzzle } from "@/context/puzzle-context";
+import { PressableScale } from "../utils/pressable-scale";
 
 type PuzzleDateProps = {
   id: string;
@@ -10,6 +15,7 @@ type PuzzleDateProps = {
   startDate: string | null;
   itemWidth: number;
   onPress: () => void;
+  // isComplete: boolean;
 };
 
 const PuzzleDate: React.FC<PuzzleDateProps> = ({
@@ -18,8 +24,51 @@ const PuzzleDate: React.FC<PuzzleDateProps> = ({
   startDate,
   itemWidth,
   onPress,
+  // isComplete,
 }) => {
-  const { dayName, dayNumber} = getUnlockedDateInfo(startDate, Number(id), true );
+
+  const puzzleId = Number(id);
+
+
+  const { dayName, dayNumber, unlockDate } = getUnlockedDateInfo(
+    startDate,
+    puzzleId,
+    true
+  );
+  const { countdown, isNextToUnlock } = usePuzzleCountdown(startDate, puzzleId, unlockDate);
+
+  const isFuture = unlockDate && unlockDate > new Date();
+
+
+
+  if (isNextToUnlock && countdown) {
+    return (
+      <View
+        style={{
+          opacity: 0.3,
+          width: itemWidth,
+          alignItems: "center",
+          justifyContent: "center",
+          marginHorizontal: 24,
+        }}
+      >
+        <View className = "justify-center items-center">
+          <Text className="font-semibold text-[#666666]">Next in </Text>
+          <Text className="font-bold text-xl text-[#666666]">{countdown}</Text>
+        </View>
+
+        <View style={{
+            marginTop: 2,
+
+            padding: 6,
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+          <SymbolView name={"clock"} tintColor={"#666666"} size={20} weight="bold"/>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <TouchableBounce
@@ -27,23 +76,24 @@ const PuzzleDate: React.FC<PuzzleDateProps> = ({
         width: itemWidth,
         alignItems: "center",
         justifyContent: "center",
+        opacity: isSelected ? 1 : 0.75,
+       
       }}
-      onPress={onPress}
+      onPress={isFuture ? undefined : onPress}
     >
       <View
         className={
           isSelected
-            ? "bg-[#F2F2F2] rounded-2xl py-4 px-6 justify-center items-center"
-            : "justify-center items-center"
+            ? "bg-[#F2F2F2] rounded-2xl py-3 px-5 justify-center items-center"
+            : "justify-center items-center  py-4 px-6 rounded-2xl "
         }
       >
-        <Text className="font-semibold text-[#666666]">{dayName}</Text>
+        <Text className="font-semibold ">{dayName}</Text>
         <Text className="font-bold text-3xl">{dayNumber}</Text>
 
         <View
           style={{
-            marginTop: 8,
-            backgroundColor: "#F2F2F2",
+         
             padding: 6,
             borderRadius: 100,
             alignItems: "center",
@@ -51,7 +101,7 @@ const PuzzleDate: React.FC<PuzzleDateProps> = ({
           }}
         >
           <SymbolView
-            name={isSelected ? "checkmark.circle.fill" : "circle.dotted"}
+            name={"circle.dotted"}
             tintColor="black"
             size={20}
           />

@@ -32,3 +32,9 @@ export const getUnlockedDateInfo = (
 
   return { unlockDate, dayName, dayNumber, monthName };
 };
+
+export const getFormattedDate = (date: Date): string => {
+  const normalized = new Date(date);
+  normalized.setHours(0, 0, 0, 0); 
+  return `${normalized.getFullYear()}-${String(normalized.getMonth() + 1).padStart(2, "0")}-${String(normalized.getDate()).padStart(2, "0")}`;
+};

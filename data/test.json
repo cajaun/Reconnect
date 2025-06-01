@@ -1,98 +1,220 @@
-[
-  {
-    "difficulty": "Difficult",
-    "id": "p1-l2-1",
-    "puzzleId": "puzzle-1",
-    "word": "RETURN"
-  },
-  {
-    "difficulty": "Straightforward",
-    "id": "p1-l0-1",
-    "puzzleId": "puzzle-1",
-    "word": "RAIN"
-  },
-  {
-    "difficulty": "Difficult",
-    "id": "p1-l2-2",
-    "puzzleId": "puzzle-1",
-    "word": "SHIFT"
-  },
-  {
-    "difficulty": "Medium",
-    "id": "p1-l1-1",
-    "puzzleId": "puzzle-1",
-    "word": "HEAT"
-  },
-  {
-    "difficulty": "Tricky",
-    "id": "p1-l3-3",
-    "puzzleId": "puzzle-1",
-    "word": "RACECAR"
-  },
-  {
-    "difficulty": "Tricky",
-    "id": "p1-l3-1",
-    "puzzleId": "puzzle-1",
-    "word": "LEVEL"
-  },
-  {
-    "difficulty": "Difficult",
-    "id": "p1-l2-3",
-    "puzzleId": "puzzle-1",
-    "word": "TAB"
-  },
-  {
-    "difficulty": "Straightforward",
-    "id": "p1-l0-2",
-    "puzzleId": "puzzle-1",
-    "word": "SLEET"
-  },
-  {
-    "difficulty": "Straightforward",
-    "id": "p1-l0-0",
-    "puzzleId": "puzzle-1",
-    "word": "HAIL"
-  },
-  {
-    "difficulty": "Medium",
-    "id": "p1-l1-3",
-    "puzzleId": "puzzle-1",
-    "word": "NETS"
-  },
-  {
-    "difficulty": "Straightforward",
-    "id": "p1-l0-3",
-    "puzzleId": "puzzle-1",
-    "word": "SNOW"
-  },
-  {
-    "difficulty": "Tricky",
-    "id": "p1-l3-0",
-    "puzzleId": "puzzle-1",
-    "word": "KAYAK"
-  },
-  {
-    "difficulty": "Medium",
-    "id": "p1-l1-2",
-    "puzzleId": "puzzle-1",
-    "word": "JAZZ"
-  },
-  {
-    "difficulty": "Difficult",
-    "id": "p1-l2-0",
-    "puzzleId": "puzzle-1",
-    "word": "OPTION"
-  },
-  {
-    "difficulty": "Tricky",
-    "id": "p1-l3-2",
-    "puzzleId": "puzzle-1",
-    "word": "MOM"
-  },
-  {
-    "difficulty": "Medium",
-    "id": "p1-l1-0",
-    "puzzleId": "puzzle-1",
-    "word": "BUCKS"
-  }
-]
+{
+  "status": "complete",
+  "mistakes": 0,
+  "guesses": [
+    {
+      "words": [
+        {
+          "id": "p1-l2-0",
+          "word": "OPTION",
+          "difficulty": "Difficult",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l2-1",
+          "word": "RETURN",
+          "difficulty": "Difficult",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l2-2",
+          "word": "SHIFT",
+          "difficulty": "Difficult",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l2-3",
+          "word": "TAB",
+          "difficulty": "Difficult",
+          "puzzleId": "puzzle-1"
+        }
+      ],
+      "correct": true
+    },
+    {
+      "words": [
+        {
+          "id": "p1-l3-0",
+          "word": "KAYAK",
+          "difficulty": "Tricky",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l3-1",
+          "word": "LEVEL",
+          "difficulty": "Tricky",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l3-2",
+          "word": "MOM",
+          "difficulty": "Tricky",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l3-3",
+          "word": "RACECAR",
+          "difficulty": "Tricky",
+          "puzzleId": "puzzle-1"
+        }
+      ],
+      "correct": true
+    },
+    {
+      "words": [
+        {
+          "id": "p1-l0-0",
+          "word": "HAIL",
+          "difficulty": "Straightforward",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l0-1",
+          "word": "RAIN",
+          "difficulty": "Straightforward",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l0-2",
+          "word": "SLEET",
+          "difficulty": "Straightforward",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l0-3",
+          "word": "SNOW",
+          "difficulty": "Straightforward",
+          "puzzleId": "puzzle-1"
+        }
+      ],
+      "correct": true
+    },
+    {
+      "words": [
+        {
+          "id": "p1-l1-0",
+          "word": "BUCKS",
+          "difficulty": "Medium",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l1-1",
+          "word": "HEAT",
+          "difficulty": "Medium",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l1-2",
+          "word": "JAZZ",
+          "difficulty": "Medium",
+          "puzzleId": "puzzle-1"
+        },
+        {
+          "id": "p1-l1-3",
+          "word": "NETS",
+          "difficulty": "Medium",
+          "puzzleId": "puzzle-1"
+        }
+      ],
+      "correct": true
+    }
+  ],
+  "shuffledWords": [
+    {
+      "id": "p1-l2-0",
+      "word": "OPTION",
+      "difficulty": "Difficult",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l2-1",
+      "word": "RETURN",
+      "difficulty": "Difficult",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l2-2",
+      "word": "SHIFT",
+      "difficulty": "Difficult",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l2-3",
+      "word": "TAB",
+      "difficulty": "Difficult",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l3-0",
+      "word": "KAYAK",
+      "difficulty": "Tricky",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l3-1",
+      "word": "LEVEL",
+      "difficulty": "Tricky",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l3-2",
+      "word": "MOM",
+      "difficulty": "Tricky",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l3-3",
+      "word": "RACECAR",
+      "difficulty": "Tricky",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l0-0",
+      "word": "HAIL",
+      "difficulty": "Straightforward",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l0-1",
+      "word": "RAIN",
+      "difficulty": "Straightforward",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l0-2",
+      "word": "SLEET",
+      "difficulty": "Straightforward",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l0-3",
+      "word": "SNOW",
+      "difficulty": "Straightforward",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l1-0",
+      "word": "BUCKS",
+      "difficulty": "Medium",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l1-1",
+      "word": "HEAT",
+      "difficulty": "Medium",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l1-2",
+      "word": "JAZZ",
+      "difficulty": "Medium",
+      "puzzleId": "puzzle-1"
+    },
+    {
+      "id": "p1-l1-3",
+      "word": "NETS",
+      "difficulty": "Medium",
+      "puzzleId": "puzzle-1"
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import Animated, {
   Easing,
   interpolate,
   interpolateColor,
+  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -9,15 +10,14 @@ import Animated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { StyleSheet, useWindowDimensions } from "react-native";
 
-import { GameSheetMutableProgress } from "./shared-progress";
-
 import { SheetContent } from "./sheet-content";
-import { MiniPlayerHeight } from "./constants";
+import { GameSheetHeight } from "./constants";
 
 import { allPuzzles } from "@/data/puzzle-data";
 
 type GameSheetProps = {
   puzzle: (typeof allPuzzles)[number];
+  progress: SharedValue<number>;
   dayName: string;
   dayNumber: number | null;
   monthName: string;
@@ -25,12 +25,12 @@ type GameSheetProps = {
 
 export const GameSheet = ({
   puzzle,
+  progress,
   dayName,
   dayNumber,
   monthName,
 }: GameSheetProps) => {
   const { height: windowHeight } = useWindowDimensions();
-  const progress = GameSheetMutableProgress;
 
   const isTapped = useSharedValue(false);
   const progressThreshold = 0.8;
@@ -73,7 +73,7 @@ export const GameSheet = ({
         [1, 0]
       );
 
-      // If fully expanded and user swipes up (i.e., negative translation), block it
+
       if (progress.value >= 1 && event.translationY < 0) return;
 
       progress.value = newProgress;
@@ -91,15 +91,15 @@ export const GameSheet = ({
     const sheetHeight = interpolate(
       progress.value,
       [0, 1],
-      [MiniPlayerHeight, windowHeight]
+      [GameSheetHeight, windowHeight]
     );
 
     return {
       height: sheetHeight,
       position: "absolute",
       top: (windowHeight - sheetHeight) / 2,
-      left: interpolate(progress.value, [0, 1], [20, 0]),
-      right: interpolate(progress.value, [0, 1], [20, 0]),
+      left: interpolate(progress.value, [0, 1], [25, 0]),
+      right: interpolate(progress.value, [0, 1], [25, 0]),
       backgroundColor: interpolateColor(
         progress.value,
         [0, 1],

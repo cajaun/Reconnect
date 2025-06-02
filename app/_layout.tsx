@@ -22,6 +22,9 @@ export default function RootLayout() {
   useEffect(() => {
 
     const init = async () => {
+      // await clearPuzzleCacheAndStorage()
+      // await AsyncStorage.clear()
+
       await setStartDate();
       await unlockPuzzles();
 

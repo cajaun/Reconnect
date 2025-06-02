@@ -31,7 +31,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const HORIZONTAL_MARGIN = 16;
 const PADDING = 24;
-const BORDER_RADIUS = 28;
+const BORDER_RADIUS = 32;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const MAX_DURATION = 350;
 const MIN_DURATION = 150;
@@ -187,10 +187,11 @@ const styles = StyleSheet.create({
     right: HORIZONTAL_MARGIN,
     backgroundColor: "white",
     borderRadius: BORDER_RADIUS,
+    borderCurve: "continuous",
     overflow: "hidden",
   },
   content: {
-    paddingHorizontal: PADDING,
+    // paddingHorizontal: PADDING,
     paddingBottom: PADDING,
   },
 });

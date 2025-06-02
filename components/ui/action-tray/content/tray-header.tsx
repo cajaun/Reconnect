@@ -28,24 +28,25 @@ export default function TrayHeader({
         />
       </View>
 
-      <View className="flex-row ">
+      <View className="relative justify-center items-center w-full">
         {back && (
-          <View className="justify-start">
-            <PressableScale
-              onPress={onPress}
-              className="w-10 h-10 rounded-full items-center bg-[#F2F2F2] justify-center "
-            >
-              <SymbolView
-                name="chevron.left"
-                tintColor={"black"}
-                weight="bold"
-                size={20}
-              />
-            </PressableScale>
+          <View className = "w-full">
+          
+          <PressableScale
+            onPress={onPress}
+            className="absolute  left-0 w-10 h-10 rounded-full items-center bg-[#F2F2F2] justify-center "
+          >
+            <SymbolView
+              name="chevron.left"
+              tintColor={"black"}
+              weight="bold"
+              size={20}
+            />
+          </PressableScale>
           </View>
         )}
 
-        <View className="flex-row gap-x-4 justify-center items-center">
+        <View className="flex-row gap-x-4 items-center">
           {icon && (
             <SymbolView
               size={25}
@@ -56,8 +57,6 @@ export default function TrayHeader({
           )}
           <Text className="font-bold text-2xl">{title}</Text>
         </View>
-
-        
       </View>
     </View>
   );

@@ -15,6 +15,7 @@ import MistakesTracker from "../puzzle/mistakes";
 import PuzzleControls from "../puzzle/puzzle-controls";
 import { usePuzzleAnimations } from "@/hooks/use-puzzle-animations";
 import { BaseOffset } from "./constants";
+import { usePuzzle } from "@/context/puzzle-context";
 
 type SheetContentProps = {
   progress: SharedValue<number>;
@@ -33,6 +34,7 @@ export const SheetContent = ({
 }: SheetContentProps) => {
   const [isInteractive, setIsInteractive] = useState(false);
 
+  const {status } = usePuzzle()
   // const { openTray, closeTray } = useActionTray();
 
   // const contentMap = React.useMemo(() => {
@@ -194,7 +196,7 @@ export const SheetContent = ({
           progress={progress}
         />
 
-        {!isInteractive && (
+        {!isInteractive && status !==  "complete" &&(
           <Animated.View
             style={[
               rPlayButtonStyle,

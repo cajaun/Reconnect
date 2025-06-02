@@ -6,8 +6,6 @@ import {
   getUnlockedDateInfo,
 } from "@/utils/dates-manager";
 import { usePuzzleCountdown } from "@/hooks/use-puzzle-countdown";
-import { usePuzzle } from "@/context/puzzle-context";
-import { PressableScale } from "../utils/pressable-scale";
 
 type PuzzleDateProps = {
   id: string;

@@ -16,7 +16,7 @@ const MistakesTracker = () => {
           return (
             <View key={idx} className="flex items-center justify-center">
               <SymbolView
-                name="flame.fill"
+                name="heart.fill"
                 weight="bold"
                 size={20}
                 tintColor={isMistake ? "black" : "#DFDFDF"}

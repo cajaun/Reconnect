@@ -12,7 +12,7 @@ export const Content: FC<Props> = ({ renderItem, width }) => {
     useSwiper();
 
   return (
-    <View style={{ width }}>
+<View style={{ width, flex: 1 }}>
       <FlatList
         ref={SwiperRef}
         data={content}
@@ -20,6 +20,7 @@ export const Content: FC<Props> = ({ renderItem, width }) => {
         horizontal
         showsHorizontalScrollIndicator={false}
         pagingEnabled
+        decelerationRate="fast"
         viewabilityConfig={{
           itemVisiblePercentThreshold: 55,
         }}

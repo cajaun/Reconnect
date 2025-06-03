@@ -10,6 +10,7 @@ import { getFormattedDate } from "@/utils/dates-manager";
 import { SwiperPagination } from "../../swiper/swiper-pagination";
 import { Content } from "../../swiper/swiper-content";
 import { Swiper } from "../../swiper/swiper";
+import StreakIcon from "@/components/streak-icon";
 
 export function streakMap(
   currentStreak: number,
@@ -84,9 +85,7 @@ const Streak: React.FC<StreakProps> = ({
         monthsInRange.push({
           year: tempDate.getFullYear(),
           month: tempDate.getMonth(),
-          days: Array.from({ length: daysInMonth }, (_, i) => i + 1).slice(
-            startDay - 1
-          ),
+          days: Array.from({ length: daysInMonth }, (_, i) => i + 1),
         });
 
         tempDate.setMonth(tempDate.getMonth() + 1);
@@ -99,6 +98,14 @@ const Streak: React.FC<StreakProps> = ({
     fetchData();
   }, []);
 
+  const completedKeys = React.useMemo(() => {
+    return new Set(
+      Array.from(completedDatesSet).map(
+        (date) => new Date(date).toISOString().split("T")[0]
+      )
+    );
+  }, [completedDatesSet]);
+
   const renderMonth = ({
     item,
   }: {
@@ -107,7 +114,6 @@ const Streak: React.FC<StreakProps> = ({
   }) => {
     const { year, month, days } = item;
 
-  
     const completedCount = days.reduce((count, day) => {
       const dateStr = getFormattedDate(new Date(year, month, day));
       return completedDatesSet.has(dateStr) ? count + 1 : count;
@@ -145,36 +151,32 @@ const Streak: React.FC<StreakProps> = ({
           className="flex-row flex-wrap"
           style={{
             width: itemWidth,
-            paddingHorizontal: 32,
+            paddingHorizontal: 28,
             gap: 6,
             rowGap: 4,
           }}
         >
           {days.map((day) => {
-            const dateStr = getFormattedDate(new Date(year, month, day));
-            const isStreakCompleted = completedDatesSet.has(dateStr);
+            const paddedMonth = String(month + 1).padStart(2, "0");
+            const paddedDay = String(day).padStart(2, "0");
+            const dateStr = `${year}-${paddedMonth}-${paddedDay}`;
+            const currentDate = new Date(year, month, day);
+            const isBeforeStart =
+              startDate !== null &&
+              currentDate < startDate &&
+              month === startDate.getMonth() &&
+              year === startDate.getFullYear();
+            const isStreakCompleted = completedKeys.has(dateStr);
 
             return (
-              <Pressable
+              <StreakIcon
                 key={day}
-                onPress={() => router.push(`/${dateStr}`)}
-                style={{
-                  width: 30,
-                  height: 30,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <SymbolView
-                  tintColor={isStreakCompleted ? "black" : "#BFBFBF"}
-                  size={22}
-                  name={
-                    isStreakCompleted
-                      ? "checkmark.circle.fill"
-                      : "circle.dotted"
-                  }
-                />
-              </Pressable>
+                day={day}
+                year={year}
+                month={month}
+                isCompleted={isStreakCompleted}
+                isLocked={isBeforeStart}
+              />
             );
           })}
         </View>
@@ -206,7 +208,7 @@ const Streak: React.FC<StreakProps> = ({
         </View>
       </View>
 
-      <View className="w-full items-center" style={{paddingHorizontal: 8}}>
+      <View className="w-full items-center" style={{ paddingHorizontal: 8 }}>
         <View
           style={{
             height: 0.25,

@@ -46,10 +46,10 @@ export default function TrayHeader({
           </View>
         )}
 
-        <View className="flex-row gap-x-4 items-center">
+        <View className="flex-row gap-x-2 items-center">
           {icon && (
             <SymbolView
-              size={25}
+              size={20}
               name={icon}
               tintColor={iconColor}
               weight="bold"

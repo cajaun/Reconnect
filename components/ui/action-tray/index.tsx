@@ -17,6 +17,7 @@ import Animated, {
   FadeIn,
   FadeOut,
   LinearTransition,
+  SharedValue,
   SlideInDown,
   SlideOutDown,
   runOnJS,
@@ -25,7 +26,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-
+import * as Haptics from "expo-haptics";
 import { Backdrop } from "./backdrop";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -41,12 +42,14 @@ type ActionTrayProps = {
   onClose?: () => void;
   contentMap: Record<number, React.ReactNode>;
   step: number;
+
 };
 
 export type ActionTrayRef = {
   open: () => void;
   isActive: () => boolean;
   close: () => void;
+  progress: SharedValue<number>;
 };
 
 const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
@@ -59,7 +62,9 @@ const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
     const { bottom } = useSafeAreaInsets();
     const heightEasing = Easing.bezier(0.26, 1, 0.5, 1).factory();
     const contentEasing = Easing.bezier(0.26, 0.8, 0.25, 1).factory();
-
+    const progress = useDerivedValue(() => {
+      return 1 - translateY.value / SCREEN_HEIGHT;
+    });
     const scrollTo = useCallback(
       (destination: number) => {
         "worklet";
@@ -84,14 +89,20 @@ const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
       () => ({
         open: () => {
           "worklet";
-          scrollTo(0);
+          runOnJS(() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            requestAnimationFrame(() => {
+              scrollTo(0);
+            });
+          })();
         },
         close,
         isActive: () => active.value,
+        progress,
       }),
-      [close, scrollTo, active.value]
+      [close, scrollTo]
     );
-
+    
     const gesture = Gesture.Pan()
       .onStart(() => {
         context.value = { y: translateY.value };
@@ -139,6 +150,7 @@ const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
 
     const content = useMemo(() => contentMap[step] || null, [step, contentMap]);
 
+    
     return (
       <>
         <Backdrop onTap={onClose ?? close} isActive={active} />

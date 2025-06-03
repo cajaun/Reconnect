@@ -36,7 +36,7 @@ const Backdrop: React.FC<BackdropProps> = React.memo(({ isActive, onTap }) => {
       style={[
         {
           ...StyleSheet.absoluteFillObject,
-          backgroundColor: "rgba(0,0,0,0.3)",
+          backgroundColor: "rgba(0,0,0,0.2)",
         },
         rBackdropStyle,
       ]}

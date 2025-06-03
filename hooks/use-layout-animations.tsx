@@ -25,6 +25,7 @@ export function useLayoutAnimations(progress: { value: number }) {
   const rScreenStyle = useAnimatedStyle(() => ({
     borderRadius: interpolate(progress.value, [0, 1], [0, 48]),
     borderCurve: "continuous",
+
   }));
 
   return { listAnimatedStyle, headerAnimatedStyle, rScreenStyle };

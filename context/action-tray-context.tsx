@@ -62,7 +62,7 @@ export const ActionTrayProvider: React.FC<{ children: ReactNode }> = ({
           translateY: interpolate(p, [0, 1], [0, 0.05]),
         },
         {
-          scale: interpolate(p, [0, 1], [1, 0.97]),
+          scale: interpolate(p, [0, 1], [1, 0.95]),
         },
       ],
     };

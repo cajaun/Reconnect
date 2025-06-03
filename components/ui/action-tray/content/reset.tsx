@@ -119,7 +119,7 @@ export function resetMap(
                 </Text>
 
                 <Text className="text-lg font-semibold text-center text-[#666666]">
-                Your solved status won't change. We'll just clear this run so you can try the puzzle again from the beginning.
+                This puzzle will reset so you can play from the beginning again. Your original progress will be saved.
                 </Text>
               </View>
             </View>

@@ -70,8 +70,8 @@ const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
         "worklet";
         active.value = destination !== SCREEN_HEIGHT;
         translateY.value = withSpring(destination, {
-          stiffness: 350, // lower for slower motion
-          damping: 35,    // higher for less bounce
+          stiffness: 750, // lower for slower motion
+          damping: 75,    // higher for less bounce
           restSpeedThreshold: 0.01, 
           restDisplacementThreshold: 0.01,
         });

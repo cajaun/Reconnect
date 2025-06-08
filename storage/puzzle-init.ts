@@ -7,7 +7,7 @@ export const setStartDate = async (): Promise<void> => {
     const startDate = await AsyncStorage.getItem(STORAGE_KEYS.START_DATE);
     if (!startDate) {
       // const today = new Date();
-      const today = new Date(2025, 4, 29);
+      const today = new Date(2025, 5, 1);
 
       const localDateString = getFormattedDate(today);
       await AsyncStorage.setItem(STORAGE_KEYS.START_DATE, localDateString);

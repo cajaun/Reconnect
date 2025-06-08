@@ -9,6 +9,7 @@ import { useLayoutAnimations } from "@/hooks/use-layout-animations";
 import { SharedValue } from "react-native-reanimated/lib/typescript/commonTypes";
 import { usePuzzle } from "@/context/puzzle-context";
 import { settingsMap } from "./ui/action-tray/content/settings";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type HeaderControlsProps = {
   progress: SharedValue<number>;
@@ -16,7 +17,7 @@ type HeaderControlsProps = {
 
 const HeaderControls: React.FC<HeaderControlsProps> = ({ progress }) => {
   const { headerAnimatedStyle } = useLayoutAnimations(progress);
-
+  const {top} = useSafeAreaInsets()
   const { openTray, closeTray } = useActionTray();
 
   const { currentStreak, longestStreak, completedDatesSet } = usePuzzle();
@@ -43,9 +44,9 @@ const HeaderControls: React.FC<HeaderControlsProps> = ({ progress }) => {
     <Animated.View
       style={[
         {
-          paddingHorizontal: 24,
+          paddingHorizontal: 26,
           position: "absolute",
-          top: -20,
+          top: -top + 8,
           left: 0,
           right: 0,
           zIndex: 1,
@@ -54,33 +55,37 @@ const HeaderControls: React.FC<HeaderControlsProps> = ({ progress }) => {
       ]}
     >
       <View className="flex-row justify-between">
-        <View className="flex-row gap-x-8">
+        <View className="flex-row gap-x-4">
           <PressableScale
             onPress={() => openTray(0, contentMapStreak)}
-            className="bg-[#F2F2F2] py-2 px-4 rounded-full flex-row gap-x-2 items-center justify-center"
+            className="bg-[#F2F2F2] w-[52px] h-[52px] rounded-full flex-row gap-x-2 items-center justify-center  "
           >
-            <SymbolView name="flame.fill" tintColor={"black"} size={20} />
+            <SymbolView name="flame.fill" tintColor={"black"} size={23} />
             <Text className="text-black text-xl font-bold">
               {" "}
               {currentStreak}
             </Text>
           </PressableScale>
 
-          <PressableScale className="bg-[#F2F2F2] py-2 px-4 flex-row gap-x-2 items-center justify-center rounded-full">
-            <SymbolView name="trophy.fill" tintColor={"black"} size={20} />
+          <PressableScale className="bg-[#F2F2F2] w-[52px] h-[52px]  flex-row gap-x-2 items-center justify-center rounded-full">
+            <SymbolView name="trophy.fill" tintColor={"black"} size={23} />
           </PressableScale>
         </View>
 
-        <View className="flex-row gap-x-8">
-          <PressableScale className="bg-[#F2F2F2] p-3 rounded-full">
-            <SymbolView name="chart.bar.fill" tintColor={"black"} size={20} />
+        <View className="flex-row gap-x-4">
+          <PressableScale className="bg-[#F2F2F2] w-[52px] h-[52px]  rounded-full  items-center justify-center">
+            <View>
+
+          
+            <SymbolView name="chart.bar.fill" tintColor={"black"} size={23} />
+            </View>
           </PressableScale>
 
           <PressableScale
             onPress={() => openTray(0, contentMapSettings)}
-            className="bg-[#F2F2F2] p-3 rounded-full"
+            className="bg-[#F2F2F2] w-[52px] h-[52px]  rounded-full items-center justify-center"
           >
-            <SymbolView name="gearshape.fill" tintColor={"black"} size={20} />
+            <SymbolView name="gearshape.fill" tintColor={"black"} size={23} />
           </PressableScale>
         </View>
       </View>

@@ -111,7 +111,7 @@ const PuzzleScreen = () => {
               bottom: 0,
               left: 0,
               right: 0,
-              paddingBottom: bottom + 10,
+              paddingBottom: bottom ,
             },
             listAnimatedStyle,
           ]}

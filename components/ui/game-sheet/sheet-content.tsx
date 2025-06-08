@@ -134,6 +134,9 @@ export const SheetContent = ({
         {monthName} {dayNumber}
       </Animated.Text>
 
+{status !== "complete" && (
+
+
       <Animated.View
         style={[
           rMistakeStyle,
@@ -148,6 +151,7 @@ export const SheetContent = ({
       >
         <MistakesTracker />
       </Animated.View>
+      )}
 
       <Animated.View style={[rLeftButtonStyle]}>
         <PressableScale
@@ -209,7 +213,7 @@ export const SheetContent = ({
             ]}
           >
             <PressableScale
-              className="px-9 py-5 rounded-full bg-white flex-row gap-x-4 items-center"
+              className="px-9 py-6 rounded-full bg-white flex-row gap-x-4 items-center"
               style={{}}
             >
               <SymbolView

@@ -49,7 +49,7 @@ export type ActionTrayRef = {
   open: () => void;
   isActive: () => boolean;
   close: () => void;
-  progress: SharedValue<number>;
+  // progress: SharedValue<number>;
 };
 
 const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
@@ -89,18 +89,12 @@ const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
       () => ({
         open: () => {
           "worklet";
-          runOnJS(() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            requestAnimationFrame(() => {
-              scrollTo(0);
-            });
-          })();
+          scrollTo(0);
         },
         close,
         isActive: () => active.value,
-        progress,
       }),
-      [close, scrollTo]
+      [close, scrollTo, active.value]
     );
     
     const gesture = Gesture.Pan()

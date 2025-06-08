@@ -54,25 +54,25 @@ export const ActionTrayProvider: React.FC<{ children: ReactNode }> = ({
     setStep(0);
   };
 
-  const rBackgroundStyle = useAnimatedStyle(() => {
-    const p = trayRef.current?.progress?.value ?? 0;
-    return {
-      transform: [
-        {
-          translateY: interpolate(p, [0, 1], [0, 0.05]),
-        },
-        {
-          scale: interpolate(p, [0, 1], [1, 0.95]),
-        },
-      ],
-    };
-  });
+  // const rBackgroundStyle = useAnimatedStyle(() => {
+  //   const p = trayRef.current?.progress?.value ?? 0;
+  //   return {
+  //     transform: [
+  //       {
+  //         translateY: interpolate(p, [0, 1], [0, 0.05]),
+  //       },
+  //       {
+  //         scale: interpolate(p, [0, 1], [1, 0.95]),
+  //       },
+  //     ],
+  //   };
+  // });
 
   return (
     <ActionTrayContext.Provider value={{ openTray, closeTray }}>
-      <Animated.View style={[{ flex: 1 }, rBackgroundStyle]}>
+      {/* <Animated.View style={[{ flex: 1 }, rBackgroundStyle]}> */}
         {children}
-      </Animated.View>
+      {/* </Animated.View> */}
 
       <ActionTray
         ref={trayRef}

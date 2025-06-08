@@ -1,3 +1,4 @@
+import { usePuzzle } from "@/context/puzzle-context";
 import {
   Extrapolation,
   interpolate,
@@ -17,17 +18,20 @@ export const usePuzzleAnimations = ({
   BaseOffset,
   safeTop,
 }: UsePuzzleAnimationsProps) => {
+
+  const {status} = usePuzzle();
+  
   const rContainerStyle = useAnimatedStyle(() => ({
     marginTop: interpolate(progress.value, [0, 1], [BaseOffset, 48]),
   }));
 
   const rTopTextStyle = useAnimatedStyle(() => {
-    const top = interpolate(progress.value, [0, 1], [-BaseOffset + 50, 40]);
+    const top = interpolate(progress.value, [0, 1], [-BaseOffset + 40, 40]);
     const translateY = interpolate(progress.value, [0, 1], [0, -25]);
     const opacity = interpolate(progress.value, [0, 0.6], [1, 0]);
     return {
       top,
-      fontSize: interpolate(progress.value, [0, 1], [30, 3]),
+      fontSize: interpolate(progress.value, [0, 1], [40, 3]),
       marginTop: interpolate(progress.value, [0, 1], [0, -24]),
       transform: [{ translateY }],
       alignSelf: "center",
@@ -48,11 +52,11 @@ export const usePuzzleAnimations = ({
   });
 
   const rDateStyle = useAnimatedStyle(() => {
-    const fontSize = interpolate(progress.value, [0, 1], [25, 19]);
+    const fontSize = interpolate(progress.value, [0, 1], [40, 19]);
     const top = interpolate(
       progress.value,
       [0, 0.95],
-      [-BaseOffset + 90, safeTop - 17]
+      [-BaseOffset + 85, safeTop - 17]
     );
     const color = interpolateColor(
       progress.value,
@@ -74,7 +78,7 @@ export const usePuzzleAnimations = ({
     top: interpolate(
       progress.value,
       [0, 0.95],
-      [-BaseOffset + 110, safeTop - 4]
+      [-BaseOffset + 125, safeTop - 4]
     ),
   }));
 

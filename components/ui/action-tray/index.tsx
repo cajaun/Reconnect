@@ -65,6 +65,7 @@ const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
     const progress = useDerivedValue(() => {
       return 1 - translateY.value / SCREEN_HEIGHT;
     });
+    
     const scrollTo = useCallback(
       (destination: number) => {
         "worklet";
@@ -89,6 +90,7 @@ const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
       () => ({
         open: () => {
           "worklet";
+          runOnJS(Haptics.selectionAsync)(); // Trigger haptic feedback
           scrollTo(0);
         },
         close,
@@ -143,11 +145,11 @@ const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
     };
 
     const content = useMemo(() => contentMap[step] || null, [step, contentMap]);
-
+    const contentKey = useMemo(() => `step-${step}`, [step]);
     
     return (
       <>
-        <Backdrop onTap={onClose ?? close} isActive={active} />
+        <Backdrop onTap={onClose ?? close} isActive={active}          progress={progress}/>
         <GestureDetector gesture={gesture}>
           <Animated.View
             style={[
@@ -156,12 +158,7 @@ const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
               rActionTrayStyle,
               style,
             ]}
-            // entering={SlideInDown.duration(1050).easing(
-            //   Easing.bezier(0.4, 0, 0.2, 1).factory()
-            // )}
-            // exiting={SlideOutDown.duration(1050).easing(
-            //   Easing.bezier(0.4, 0, 0.2, 1).factory()
-            // )}
+           
             layout={layoutAnimationConfig}
             onLayout={handleLayout}
           >
@@ -169,6 +166,7 @@ const ActionTray = forwardRef<ActionTrayRef, ActionTrayProps>(
 
           
             <Animated.View
+                 key={contentKey}
               entering={FadeIn.duration(opacityDuration.value).easing(
                 contentEasing
               )}

@@ -2,14 +2,16 @@ import Animated, {
   Easing,
   interpolate,
   interpolateColor,
+  runOnJS,
   SharedValue,
   useAnimatedStyle,
   useSharedValue,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { StyleSheet, useWindowDimensions } from "react-native";
-
+import * as Haptics from 'expo-haptics';
 import { SheetContent } from "./sheet-content";
 import { GameSheetHeight } from "./constants";
 
@@ -48,11 +50,13 @@ export const GameSheet = ({
       if (progress.value >= progressThreshold) {
         return;
       }
-
-      progress.value = withTiming(1, {
-        duration: 200,
-        easing: EasingsUtils.inOut,
-      });
+ 
+      progress.value = withSpring( 1, {
+        stiffness: 1000,  // ⬆️ High stiffness = faster acceleration
+        damping: 60,      // ⬆️ Moderate damping = avoids excessive bounce
+        mass: 1,          // ⚖️ Lower mass = faster movement      
+      })
+      
     })
     .onFinalize(() => {
       isTapped.value = false;
@@ -120,8 +124,11 @@ export const GameSheet = ({
       shadowOpacity: interpolate(progress.value, [0, 1], [0.2, 0.5]),
       transform: [
         {
-          scale: withTiming(isTapped.value ? 0.98 : 1, {
-            easing: EasingsUtils.inOut,
+          scale: withSpring(isTapped.value ? 0.98 : 1, {
+            stiffness: 750, // lower for slower motion
+            damping: 75,    // higher for less bounce
+            restSpeedThreshold: 0.01, 
+            restDisplacementThreshold: 0.01,
           }),
         },
       ],

@@ -5,6 +5,7 @@ import Animated, {
   runOnJS,
   withTiming,
   Easing,
+  withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React, { useState } from "react";
@@ -16,6 +17,7 @@ import PuzzleControls from "../puzzle/puzzle-controls";
 import { usePuzzleAnimations } from "@/hooks/use-puzzle-animations";
 import { BaseOffset } from "./constants";
 import { usePuzzle } from "@/context/puzzle-context";
+import TouchableBounce from "../utils/touchable-bounce";
 
 type SheetContentProps = {
   progress: SharedValue<number>;
@@ -154,12 +156,15 @@ export const SheetContent = ({
       )}
 
       <Animated.View style={[rLeftButtonStyle]}>
-        <PressableScale
+        <TouchableBounce
           onPress={() => {
-            progress.value = withTiming(0, {
-              duration: 350,
-              easing: EasingsUtils.inOut,
-            });
+            progress.value = withSpring( 0, {
+              stiffness: 600,            // moderate pull
+              damping: 40,               // light damping → some bounce
+              mass: 2,         // adds responsiveness but not sluggish
+              // restDisplacementThreshold: 0.01,  // let it finish slightly earlier
+              // restSpeedThreshold: 0.01,
+            })
           }}
           className="w-16 h-16 rounded-full items-center bg-[#F2F2F2] justify-center "
         >
@@ -169,7 +174,7 @@ export const SheetContent = ({
             weight="bold"
             size={25}
           />
-        </PressableScale>
+        </TouchableBounce>
       </Animated.View>
 
       <Animated.View style={[rRightButtonStyle]}>

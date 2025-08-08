@@ -24,13 +24,14 @@ export type TouchableScaleProps = Omit<
     | "light"
     | "medium"
     | "heavy";
+    className?: string;
 };
 
 /**
  * Touchable which scales the children down when pressed.
  */
 const TouchableBounce = React.forwardRef<View, TouchableScaleProps>(
-  ({ style, children, onPressIn, sensory, ...props }, ref) => {
+  ({ style, children, onPressIn, sensory,className, ...props }, ref) => {
     const onSensory = React.useCallback(() => {
       if (!sensory) return;
       if (sensory === true) {
@@ -53,6 +54,7 @@ const TouchableBounce = React.forwardRef<View, TouchableScaleProps>(
     return (
       <RNTouchableBounce
         {...props}
+        className={className}
         ref={ref}
         style={[style]}
         onPressIn={(ev: any) => {

@@ -1,50 +1,60 @@
-# Welcome to your Expo app 👋
+# Reconnect
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Reconnect is a modern reimagining of the New York Times "Connections" game — but better. 
+With Reconnect, you can play through all puzzles without daily limits, track your progress locally, and enjoy a clean, mobile-first experience.
 
-## Get started
+Built entirely in **React Native** with **Expo** and **AsyncStorage**, Reconnect stores all your game data locally, ensuring you can play offline anytime — no backend required.
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+- 🎯 **Unlimited Puzzles** – Play through the full library without waiting for the next day.
+- 📱 **Offline Play** – Thanks to AsyncStorage, all game state and progress are saved locally.
+- 🎨 **Modern UI** – Smooth animations and intuitive design for an enjoyable experience.
+- 🧩 **Better Than the Original** – More puzzles, no ads, and improved UX.
+- 🚫 **No Backend Needed** – Fast and lightweight, with everything stored on your device.
 
-2. Start the app
+## Tech Stack
 
-   ```bash
-    npx expo start
-   ```
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/)
+- [AsyncStorage](https://react-native-async-storage.github.io/async-storage/)
 
-In the output, you'll find options to open the app in a
+## Installation
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+1. Clone this repository:
 
 ```bash
-npm run reset-project
+git clone https://github.com/cajaun/reconnect.git
+cd reconnect
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies:
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Start the development server:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npx expo start
+```
 
-## Join the community
+4. Open in Expo Go on your device or in an emulator.
 
-Join our community of developers creating universal apps.
+## How It Works
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Reconnect uses **AsyncStorage** to save:
+- Completed puzzles
+- Player statistics
+- Current game progress
+
+This ensures you can close the app and pick up exactly where you left off, even without an internet connection.
+
+## Contributing
+
+Contributions are welcome! If you’d like to improve Reconnect, please fork the repo and submit a pull request.
+
+## License
+
+MIT License © 2025 Your Name
